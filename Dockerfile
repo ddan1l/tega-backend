@@ -1,11 +1,13 @@
-FROM golang:1.21 AS builder
+FROM golang:1.24.1 AS builder
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download
+COPY air.toml ./
+COPY go.mod ./
+
+RUN go mod download 
 
 COPY . .
 
