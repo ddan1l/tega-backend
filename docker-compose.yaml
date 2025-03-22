@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+  db:
+    container_name: postgres
+    image: postgres
+    restart: unless-stopped
+    networks:
+      - example_net
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: tega
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgres-data:/var/lib/postgresql/data
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    command: ["air"]
+networks:
+  example_net:
+    name: example_net

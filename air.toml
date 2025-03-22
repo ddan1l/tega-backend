@@ -1,0 +1,8 @@
+[build]
+  cmd = "go run main.go"  # Команда для запуска приложения
+  bin = "tmp/main"        # Временный бинарник
+  delay = "100ms"         # Задержка перед рестартом
+  exclude_dir = ["vendor", "tmp"]  # Исключаемые папки
+
+[log]
+  level = "debug"
