@@ -1,7 +1,0 @@
-[build]
-  cmd = "go run ./cmd/main.go" 
-  delay = 100  
-  exclude_dir = ["vendor", "tmp"] 
-
-[log]
-  level = "debug"
