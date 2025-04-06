@@ -9,11 +9,10 @@ import (
 type User struct {
 	gorm.Model
 
-	Id           int
-	Name         string
+	Id           int `gorm:"index"`
+	FullName     string
 	Email        string
 	PasswordHash string
-	LastName     string
 
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time

@@ -2,11 +2,13 @@ module github.com/ddan1l/tega-api
 
 go 1.24.1
 
-require github.com/spf13/viper v1.20.0
+require (
+	ariga.io/atlas-provider-gorm v0.5.1
+	github.com/spf13/viper v1.20.0
+)
 
 require (
 	ariga.io/atlas-go-sdk v0.7.0 // indirect
-	ariga.io/atlas-provider-gorm v0.5.1 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/alecthomas/kong v1.10.0 // indirect
 	github.com/go-sql-driver/mysql v1.9.1 // indirect

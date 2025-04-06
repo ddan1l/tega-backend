@@ -2,10 +2,12 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/ddan1l/tega-api/config"
 	"github.com/ddan1l/tega-api/database"
+
+	auth_handler "github.com/ddan1l/tega-api/handlers/auth"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,11 +28,9 @@ func NewGinServer(conf *config.Config, db database.Database) Server {
 }
 
 func (s *ginServer) Start() {
-	s.app.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "ww",
-		})
-	})
+	authHandler := auth_handler.NewAuthHandler()
+
+	s.app.POST("/login", authHandler.Login)
 
 	serverUrl := fmt.Sprintf(":%d", s.conf.Server.Port)
 
