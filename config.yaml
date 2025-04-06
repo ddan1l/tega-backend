@@ -2,10 +2,10 @@ server:
   port: 8080
   
 db:
-  host: localhost
+  host: db
   port: 5432
-  user: root
-  password: root
+  user: tega
+  password: 123
   dbname: tega
   sslmode: disable
   timezone: Asia/Bangkok
