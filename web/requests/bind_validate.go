@@ -37,17 +37,16 @@ func BindAndValidate(c *gin.Context, obj interface{}) bool {
 
 		if errors.As(err, &validateErrs) {
 			for _, e := range validateErrs {
-				// fmt.Println(e.Namespace())
-				// fmt.Println(e.Field())
-				// fmt.Println(e.StructNamespace())
-				// fmt.Println(e.StructField())
-				// fmt.Println(e.Tag())
-				// fmt.Println(e.ActualTag())
-				// fmt.Println(e.Kind())
-				// fmt.Println(e.Type())
-				// fmt.Println(e.Value())
-				// fmt.Println(e.Param())
-				// fmt.Println()
+				// e.Namespace()
+				// e.Field()
+				// e.StructNamespace()
+				// e.StructField()
+				// e.Tag()
+				// e.ActualTag()
+				// e.Kind()
+				// e.Type()
+				// e.Value()
+				// e.Param()
 
 				if len(e.Param()) > 0 {
 					details[e.Field()] = fmt.Sprintf("Must be %s %s", e.Tag(), e.Param())

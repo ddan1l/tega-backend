@@ -4,6 +4,6 @@ import "github.com/gin-gonic/gin"
 
 type AuthHandler interface {
 	Register(c *gin.Context)
-	// Register(c any) error
-	// Logout(c any) error
+	Login(c *gin.Context)
+	Logout(c *gin.Context)
 }

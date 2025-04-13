@@ -6,5 +6,5 @@ import (
 )
 
 func ErrorResponse(c *gin.Context, err *errs.AppError) {
-	c.JSON(err.Status, gin.H{"error": &err})
+	c.JSON(err.Status, gin.H{"error": &err, "success": false})
 }

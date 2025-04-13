@@ -2,52 +2,67 @@ package server
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/ddan1l/tega-backend/config"
 	"github.com/ddan1l/tega-backend/database"
+	"github.com/ddan1l/tega-backend/factory"
 	auth_handler "github.com/ddan1l/tega-backend/handlers/auth"
-	token_repository "github.com/ddan1l/tega-backend/repositories/token"
-	user_repository "github.com/ddan1l/tega-backend/repositories/user"
-	auth_usecase "github.com/ddan1l/tega-backend/usecases/auth"
+	auth_middleware "github.com/ddan1l/tega-backend/middleware/auth"
 	"github.com/gin-gonic/gin"
 )
 
 type ginServer struct {
-	app  *gin.Engine
-	conf *config.Config
-	db   database.Database
+	app     *gin.Engine
+	db      database.Database
+	conf    *config.Config
+	factory *factory.DefaultFactory
 }
 
 func NewGinServer(conf *config.Config, db database.Database) Server {
 	app := gin.Default()
+	factory := factory.NewDefaultFactory(db)
+
+	log.SetOutput(os.Stdout)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	return &ginServer{
-		app:  app,
-		db:   db,
-		conf: conf,
+		app:     app,
+		db:      db,
+		conf:    conf,
+		factory: factory,
 	}
 }
 
 func (s *ginServer) Start() {
 	s.initializeAuthHandler()
 
-	serverUrl := fmt.Sprintf(":%d", s.conf.Server.Port)
+	authMiddleware := auth_middleware.NewAuthMiddleware(
+		s.factory.CreateAuthUseCase(),
+	)
 
+	s.app.Use(authMiddleware.Middleware())
+
+	s.app.GET("/protected", func(c *gin.Context) {
+		u, _ := c.Get("user")
+		c.JSON(200, gin.H{
+			"message": u,
+		})
+	})
+
+	serverUrl := fmt.Sprintf(":%d", s.conf.Server.Port)
 	s.app.Run(serverUrl)
 }
 
 func (s *ginServer) initializeAuthHandler() {
-	userRepository := user_repository.NewUserPgRepository(s.db)
-	tokenRepository := token_repository.NewTokenPgRepository(s.db)
-
-	authUseCase := auth_usecase.NewAuthUsecaseImpl(
-		userRepository,
-		tokenRepository,
-	)
-
 	authHandler := auth_handler.NewAuthHandler(
-		authUseCase,
+		s.factory.CreateAuthUseCase(),
 	)
 
-	s.app.POST("/register", authHandler.Register)
+	g := s.app.Group("/auth")
+
+	g.POST("/register", authHandler.Register)
+	g.POST("/login", authHandler.Login)
+	g.POST("/logout", authHandler.Logout)
 }

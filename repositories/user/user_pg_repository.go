@@ -34,8 +34,17 @@ func (r *userPgRepository) Create(in *user_dto.CreateUserDto) (*models.User, err
 }
 
 func (r *userPgRepository) FindById(in *user_dto.FindByIdDto) (*models.User, error) {
-	//result := r.db.GetDb().First(&models.User{}, in.Id)
-	return nil, nil
+	var user models.User
+
+	result := r.db.GetDb().Where(models.User{
+		Id: in.Id,
+	}).First(&user)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
 }
 
 func (r *userPgRepository) FindByEmail(in *user_dto.FindByEmailDto) (*models.User, error) {

@@ -15,6 +15,7 @@ type Token struct {
 	UserId int
 	User   User
 
+	ExpiresAt time.Time `gorm:"default:current_timestamp"`
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime

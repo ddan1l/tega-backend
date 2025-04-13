@@ -16,8 +16,9 @@ func NewTokenPgRepository(db database.Database) TokenRepository {
 
 func (r *tokenPgRepository) Create(in *auth_dto.CreateTokenDto) (*models.Token, error) {
 	token := &models.Token{
-		Token:  in.Token,
-		UserId: in.UserId,
+		Token:     in.Token,
+		UserId:    in.UserId,
+		ExpiresAt: in.ExpiresAt,
 	}
 
 	result := r.db.GetDb().Create(&token)
@@ -27,4 +28,32 @@ func (r *tokenPgRepository) Create(in *auth_dto.CreateTokenDto) (*models.Token, 
 	}
 
 	return token, nil
+}
+
+func (r *tokenPgRepository) FindByToken(t string) (*models.Token, error) {
+	var token models.Token
+
+	result := r.db.GetDb().Where(models.Token{
+		Token: t,
+	}).First(&token)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &token, nil
+}
+
+func (r *tokenPgRepository) Delete(t string) error {
+	var token models.Token
+
+	result := r.db.GetDb().Where(models.Token{
+		Token: t,
+	}).Delete(&token)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }

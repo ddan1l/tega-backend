@@ -7,4 +7,6 @@ import (
 
 type TokenRepository interface {
 	Create(in *auth_dto.CreateTokenDto) (*models.Token, error)
+	Delete(t string) error
+	FindByToken(t string) (*models.Token, error)
 }
