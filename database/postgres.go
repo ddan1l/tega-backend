@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ddan1l/tega-api/config"
+	"github.com/ddan1l/tega-backend/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

@@ -1,4 +1,4 @@
-module github.com/ddan1l/tega-api
+module github.com/ddan1l/tega-backend
 
 go 1.24.1
 
@@ -11,7 +11,9 @@ require (
 	ariga.io/atlas-go-sdk v0.7.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/alecthomas/kong v1.10.0 // indirect
+	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.9.1 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/ddan1l/tega-api/config"
-	"github.com/ddan1l/tega-api/database"
-	"github.com/ddan1l/tega-api/server"
+	"github.com/ddan1l/tega-backend/config"
+	"github.com/ddan1l/tega-backend/database"
+	"github.com/ddan1l/tega-backend/server"
 )
 
 func main() {

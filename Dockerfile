@@ -7,8 +7,15 @@ WORKDIR /app
 
 COPY go.mod go.sum ./
 
-RUN go mod download 
+RUN go mod download
 
 COPY . .
+
+FROM golang:1.24.1 AS final
+
+WORKDIR /app
+
+COPY --from=builder /app /app
+COPY --from=builder /go/bin/air /usr/local/bin/air
 
 CMD ["air"]

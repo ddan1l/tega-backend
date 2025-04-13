@@ -3,7 +3,10 @@ data "external_schema" "gorm" {
   "go",
   "run",
   "-mod=mod",
-  "./loader",
+  "ariga.io/atlas-provider-gorm",
+  "load",
+   "--path", "./models",
+   "--dialect", "postgres",
   ]
 }
 

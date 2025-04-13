@@ -10,4 +10,8 @@ type (
 	FindByIdDto struct {
 		Id int
 	}
+
+	FindByEmailDto struct {
+		Email string
+	}
 )

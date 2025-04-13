@@ -7,13 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
+type Token struct {
 	gorm.Model
 
-	Id           int `gorm:"primaryKey;autoIncrement"`
-	FullName     string
-	Email        string
-	PasswordHash string
+	Id     int `gorm:"primaryKey;autoIncrement"`
+	Token  string
+	UserId int
+	User   User
 
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time
