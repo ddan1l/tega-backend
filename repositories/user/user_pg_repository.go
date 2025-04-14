@@ -37,7 +37,7 @@ func (r *userPgRepository) FindById(in *user_dto.FindByIdDto) (*models.User, err
 	var user models.User
 
 	result := r.db.GetDb().Where(models.User{
-		Id: in.Id,
+		ID: in.ID,
 	}).First(&user)
 
 	if result.Error != nil {

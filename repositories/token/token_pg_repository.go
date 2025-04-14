@@ -17,7 +17,7 @@ func NewTokenPgRepository(db database.Database) TokenRepository {
 func (r *tokenPgRepository) Create(in *auth_dto.CreateTokenDto) (*models.Token, error) {
 	token := &models.Token{
 		Token:     in.Token,
-		UserId:    in.UserId,
+		UserID:    in.UserID,
 		ExpiresAt: in.ExpiresAt,
 	}
 

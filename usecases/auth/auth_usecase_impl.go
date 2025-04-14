@@ -17,7 +17,7 @@ var accessSecret = []byte("access_secret_key2")
 var refreshSecret = []byte("refresh_secret_key")
 
 type JwtClaims struct {
-	UserId int `json:"user_id"`
+	UserID int `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
@@ -57,11 +57,11 @@ func (u *authUsecaseImpl) RegisterUser(in *auth_dto.RegisterUserDto) (*auth_dto.
 			return nil, errs.Auth.WithError(err)
 		}
 
-		if pair, err := u.issuePair(user.Id); err != nil {
+		if pair, err := u.issuePair(user.ID); err != nil {
 			return nil, errs.Auth.WithError(err)
 		} else {
 			_, err := u.tokenRepository.Create(&auth_dto.CreateTokenDto{
-				UserId:    user.Id,
+				UserID:    user.ID,
 				Token:     pair.RefreshToken,
 				ExpiresAt: time.Now().Add(RefreshTokenMaxAge),
 			})
@@ -92,11 +92,11 @@ func (u *authUsecaseImpl) LoginUser(in *auth_dto.LoginUserDto) (*auth_dto.Tokens
 	if ok := utils.CheckPasswordHash(in.Password, user.PasswordHash); !ok {
 		return nil, errs.IncorrectPassword
 	} else {
-		if pair, err := u.issuePair(user.Id); err != nil {
+		if pair, err := u.issuePair(user.ID); err != nil {
 			return nil, errs.Auth.WithError(err)
 		} else {
 			_, err := u.tokenRepository.Create(&auth_dto.CreateTokenDto{
-				UserId:    user.Id,
+				UserID:    user.ID,
 				Token:     pair.RefreshToken,
 				ExpiresAt: time.Now().Add(RefreshTokenMaxAge),
 			})
@@ -139,7 +139,7 @@ func (u *authUsecaseImpl) CheckUserExists(e string) *errs.AppError {
 func (u *authUsecaseImpl) issuePair(id int) (*auth_dto.TokensPairDto, *errs.AppError) {
 
 	accessToken, err := u.issueToken(&auth_dto.IssueTokenDto{
-		UserId:    id,
+		UserID:    id,
 		ExpiresAt: time.Now().Add(AccessTokenMaxAge),
 		Secret:    accessSecret,
 	})
@@ -149,7 +149,7 @@ func (u *authUsecaseImpl) issuePair(id int) (*auth_dto.TokensPairDto, *errs.AppE
 	}
 
 	refreshToken, err := u.issueToken(&auth_dto.IssueTokenDto{
-		UserId:    id,
+		UserID:    id,
 		ExpiresAt: time.Now().Add(RefreshTokenMaxAge),
 		Secret:    refreshSecret,
 	})
@@ -166,7 +166,7 @@ func (u *authUsecaseImpl) issuePair(id int) (*auth_dto.TokensPairDto, *errs.AppE
 
 // issueToken generates a JWT token for the specified user ID with given secret key.
 // The token contains:
-//   - user_id claim (provided userId)
+//   - user_id claim (provided userID)
 //   - exp claim (15 minutes from issuance)
 //
 // Returns:
@@ -175,7 +175,7 @@ func (u *authUsecaseImpl) issuePair(id int) (*auth_dto.TokensPairDto, *errs.AppE
 func (u *authUsecaseImpl) issueToken(in *auth_dto.IssueTokenDto) (string, *errs.AppError) {
 
 	claims := JwtClaims{
-		UserId: in.UserId,
+		UserID: in.UserID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(in.ExpiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -227,7 +227,7 @@ func (u *authUsecaseImpl) Authenticate(in *auth_dto.TokensPairDto) (*auth_dto.Au
 		isEmptyRefresh = in.RefreshToken == "" // Flag for empty refresh token
 		isEmptyPair    = isEmptyAccess && isEmptyRefresh
 		newAccessToken = "" // Will contain new access token if generated
-		userId         = 0  // Will store authenticated user ID
+		userID         = 0  // Will store authenticated user ID
 	)
 
 	// Reject requests with no valid tokens
@@ -255,7 +255,7 @@ func (u *authUsecaseImpl) Authenticate(in *auth_dto.TokensPairDto) (*auth_dto.Au
 
 		// Prepare data for new access token generation
 		newAccessTokenDto := &auth_dto.IssueTokenDto{
-			UserId:    refreshToken.UserId, // Use ID from refresh token
+			UserID:    refreshToken.UserID, // Use ID from refresh token
 			ExpiresAt: time.Now().Add(AccessTokenMaxAge),
 			Secret:    accessSecret,
 		}
@@ -265,7 +265,7 @@ func (u *authUsecaseImpl) Authenticate(in *auth_dto.TokensPairDto) (*auth_dto.Au
 			return nil, errs.Forbidden.WithError(err)
 		} else {
 			newAccessToken = accessToken
-			userId = refreshToken.UserId
+			userID = refreshToken.UserID
 		}
 
 	} else {
@@ -279,12 +279,12 @@ func (u *authUsecaseImpl) Authenticate(in *auth_dto.TokensPairDto) (*auth_dto.Au
 			return nil, errAccessToken
 		}
 
-		userId = claims.UserId // Extract user ID from access token claims
+		userID = claims.UserID // Extract user ID from access token claims
 	}
 
 	// Fetch full user data by ID obtained from tokens
 	user, errFindUser := u.userRepository.FindById(&user_dto.FindByIdDto{
-		Id: userId,
+		ID: userID,
 	})
 
 	if errFindUser != nil {

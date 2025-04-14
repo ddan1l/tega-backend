@@ -8,7 +8,7 @@ import (
 
 type (
 	CreateTokenDto struct {
-		UserId    int
+		UserID    int
 		Token     string
 		ExpiresAt time.Time
 	}
@@ -24,7 +24,7 @@ type (
 	}
 
 	IssueTokenDto struct {
-		UserId    int
+		UserID    int
 		Secret    []byte
 		ExpiresAt time.Time
 	}

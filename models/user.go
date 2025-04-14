@@ -10,9 +10,9 @@ import (
 type User struct {
 	gorm.Model
 
-	Id           int `gorm:"primaryKey;autoIncrement"`
+	ID           int `gorm:"primaryKey;autoIncrement"`
 	FullName     string
-	Email        string
+	Email        string `gorm:"unique"`
 	PasswordHash string
 
 	CreatedAt time.Time `gorm:"default:current_timestamp"`

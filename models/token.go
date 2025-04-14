@@ -10,9 +10,9 @@ import (
 type Token struct {
 	gorm.Model
 
-	Id     int `gorm:"primaryKey;autoIncrement"`
+	ID     int `gorm:"primaryKey;autoIncrement"`
 	Token  string
-	UserId int
+	UserID int
 	User   User
 
 	ExpiresAt time.Time `gorm:"default:current_timestamp"`

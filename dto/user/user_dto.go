@@ -8,7 +8,7 @@ type (
 	}
 
 	FindByIdDto struct {
-		Id int
+		ID int
 	}
 
 	FindByEmailDto struct {
