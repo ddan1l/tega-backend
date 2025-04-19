@@ -22,6 +22,18 @@ func NewAuthHandler(authUsecase auth_usecase.AuthUsecase) AuthHandler {
 	}
 }
 
+// Register godoc
+// @Summary User register
+// @Description Register user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body req.RegisterUserRequest true "Register credentials"
+// @Success 200 {object} res.SuccessResponse
+// @Failure 400 {object} res.ErrorResponse
+// @Failure 401 {object} res.ErrorResponse
+// @Failure 500 {object} res.ErrorResponse
+// @Router /auth/register [post]
 func (h *authHandler) Register(c *gin.Context) {
 	var r req.RegisterUserRequest
 
@@ -36,7 +48,7 @@ func (h *authHandler) Register(c *gin.Context) {
 	}
 
 	if pair, err := h.authUsecase.RegisterUser(&dto); err != nil {
-		res.ErrorResponse(c, err)
+		res.Error(c, err)
 	} else {
 		exp := &auth_dto.TokensPairExpirationDto{
 			AccessTokenExpiration:  int(auth_usecase.AccessTokenMaxAge.Seconds()),
@@ -45,10 +57,22 @@ func (h *authHandler) Register(c *gin.Context) {
 
 		h.setAuthCookies(c, pair, exp)
 
-		res.SuccessResponse(c)
+		res.Succes(c)
 	}
 }
 
+// Login godoc
+// @Summary User login
+// @Description Authenticate user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body req.LoginUserRequest true "Login credentials"
+// @Success 200 {object} res.SuccessResponse
+// @Failure 400 {object} res.ErrorResponse
+// @Failure 401 {object} res.ErrorResponse
+// @Failure 500 {object} res.ErrorResponse
+// @Router /auth/login [post]
 func (h *authHandler) Login(c *gin.Context) {
 	var r req.LoginUserRequest
 
@@ -62,7 +86,7 @@ func (h *authHandler) Login(c *gin.Context) {
 	}
 
 	if pair, err := h.authUsecase.LoginUser(&dto); err != nil {
-		res.ErrorResponse(c, err)
+		res.Error(c, err)
 	} else {
 		exp := &auth_dto.TokensPairExpirationDto{
 			AccessTokenExpiration:  int(auth_usecase.AccessTokenMaxAge.Seconds()),
@@ -71,10 +95,21 @@ func (h *authHandler) Login(c *gin.Context) {
 
 		h.setAuthCookies(c, pair, exp)
 
-		res.SuccessResponse(c)
+		res.Succes(c)
 	}
 }
 
+// Logout godoc
+// @Summary User logout
+// @Description Logout user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.SuccessResponse
+// @Failure 400 {object} res.ErrorResponse
+// @Failure 401 {object} res.ErrorResponse
+// @Failure 500 {object} res.ErrorResponse
+// @Router /auth/logout [post]
 func (h *authHandler) Logout(c *gin.Context) {
 	refreshToken := utils.SafeGetCookie(c, "RefreshToken")
 
@@ -92,12 +127,12 @@ func (h *authHandler) Logout(c *gin.Context) {
 
 	if refreshToken != "" {
 		if err := h.authUsecase.DeleteToken(refreshToken); err != nil {
-			res.ErrorResponse(c, err)
+			res.Error(c, err)
 			return
 		}
 	}
 
-	res.SuccessResponse(c)
+	res.Succes(c)
 }
 
 func (h *authHandler) setAuthCookies(c *gin.Context, pair *auth_dto.TokensPairDto, exp *auth_dto.TokensPairExpirationDto) {

@@ -64,7 +64,7 @@ func BindAndValidate(c *gin.Context, obj interface{}) bool {
 }
 
 func errorWith(c *gin.Context, status int, code, message string, details interface{}) bool {
-	res.ErrorResponse(c, &errs.AppError{
+	res.Error(c, &errs.AppError{
 		Status:  status,
 		Code:    code,
 		Message: message,

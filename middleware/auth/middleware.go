@@ -32,7 +32,7 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 		if err != nil || authenticatedDto == nil || authenticatedDto.User == nil {
 			m.clearCookies(c)
 
-			res.ErrorResponse(c, err)
+			res.Error(c, err)
 
 			c.Abort()
 			return

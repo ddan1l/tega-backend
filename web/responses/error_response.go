@@ -5,6 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ErrorResponse(c *gin.Context, err *errs.AppError) {
-	c.JSON(err.Status, gin.H{"error": &err, "success": false})
+type ErrorResponse struct {
+	Success bool           `json:"success" example:"false"`
+	Error   *errs.AppError `json:"error"`
+}
+
+func Error(c *gin.Context, err *errs.AppError) {
+	c.JSON(err.Status, ErrorResponse{Success: false, Error: err})
 }
