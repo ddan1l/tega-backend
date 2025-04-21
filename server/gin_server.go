@@ -7,10 +7,13 @@ import (
 
 	"github.com/ddan1l/tega-backend/config"
 	"github.com/ddan1l/tega-backend/database"
+	_ "github.com/ddan1l/tega-backend/docs"
 	"github.com/ddan1l/tega-backend/factory"
 	auth_handler "github.com/ddan1l/tega-backend/handlers/auth"
-	auth_middleware "github.com/ddan1l/tega-backend/middleware/auth"
+	"github.com/ddan1l/tega-backend/middleware"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type ginServer struct {
@@ -36,26 +39,24 @@ func NewGinServer(conf *config.Config, db database.Database) Server {
 }
 
 func (s *ginServer) Start() {
-	s.initializeAuthHandler()
 
-	authMiddleware := auth_middleware.NewAuthMiddleware(
+	s.app.Use(middleware.CORSMiddleware())
+
+	if os.Getenv("ENV") != "production" {
+		s.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
+
+	authMiddleware := middleware.NewAuthMiddleware(
 		s.factory.CreateAuthUseCase(),
 	)
 
-	s.app.Use(authMiddleware.Middleware())
-
-	s.app.GET("/protected", func(c *gin.Context) {
-		u, _ := c.Get("user")
-		c.JSON(200, gin.H{
-			"message": u,
-		})
-	})
+	s.initializeAuthHandler(authMiddleware)
 
 	serverUrl := fmt.Sprintf(":%d", s.conf.Server.Port)
 	s.app.Run(serverUrl)
 }
 
-func (s *ginServer) initializeAuthHandler() {
+func (s *ginServer) initializeAuthHandler(authMiddleware middleware.AuthMiddleware) {
 	authHandler := auth_handler.NewAuthHandler(
 		s.factory.CreateAuthUseCase(),
 	)
@@ -65,4 +66,7 @@ func (s *ginServer) initializeAuthHandler() {
 	g.POST("/register", authHandler.Register)
 	g.POST("/login", authHandler.Login)
 	g.POST("/logout", authHandler.Logout)
+
+	s.app.Use(authMiddleware.Middleware())
+	s.app.GET("/auth/user", authHandler.User)
 }

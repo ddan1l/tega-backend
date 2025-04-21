@@ -25,30 +25,22 @@ test:
 ### Utils ###
 bash:
 	docker-compose exec backend bash
+generate-errors:
+	docker-compose exec backend go run tools/generate_errors_types/main.go
 
 ### Docs ###
-generate-swagger:
+docs:
 	@echo "🔄 Generate Swagger docs..."
+	
+	docker-compose exec backend go run tools/generate_errors_types/main.go
 	swag init -g handlers/**/*handler.go --output $(BACKEND_DIR)/docs
 	
 	@# Check is other services exists
-	@if [ -d "$(COMMON_DIR)/swagger" ] && [ -d "$(FRONTEND_DIR)" ]; then \
-		echo "📁 Copy docs..."; \
-		cp -r $(BACKEND_DIR)/docs $(COMMON_DIR)/swagger; \
+	@if [ -d "$(FRONTEND_DIR)" ]; then \
+		echo "📁 Copy swagger.json..."; \
 		cp $(BACKEND_DIR)/docs/swagger.json $(FRONTEND_DIR)/swagger.json; \
-		rm -rf $(BACKEND_DIR)/docs; \
 		echo "📁 Generate ts files..."; \
 		cd $(FRONTEND_DIR) && npm run generate-types-file; \
 	else \
-		echo "⚠️ Skipping copy: COMMON_DIR/swagger or FRONTEND_DIR does not exist"; \
+		echo "⚠️ Skipping copy: FRONTEND_DIR does not exist"; \
 	fi
-
-restart-swagger-service:
-	@if docker-compose ps -q swagger >/dev/null 2>&1; then \
-		echo "🔄 Restarting swagger service..."; \
-		docker-compose restart swagger; \
-	else \
-		echo "⚠️ Warning: swagger service does not exist - skipping restart"; \
-	fi
-
-docs: generate-swagger restart-swagger-service

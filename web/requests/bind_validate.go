@@ -3,7 +3,7 @@ package req
 import (
 	"errors"
 	"fmt"
-	"net/http"
+	"strings"
 
 	errs "github.com/ddan1l/tega-backend/errors"
 	res "github.com/ddan1l/tega-backend/web/responses"
@@ -28,7 +28,8 @@ func BindAndValidate(c *gin.Context, obj interface{}) bool {
 		var invalidValidationError *validator.InvalidValidationError
 
 		if errors.As(err, &invalidValidationError) {
-			return errorWith(c, http.StatusBadRequest, "BAD_REQUEST", err.Error(), nil)
+			res.Error(c, errs.BadRequest)
+			return false
 		}
 
 		var validateErrs validator.ValidationErrors
@@ -49,26 +50,17 @@ func BindAndValidate(c *gin.Context, obj interface{}) bool {
 				// e.Param()
 
 				if len(e.Param()) > 0 {
-					details[e.Field()] = fmt.Sprintf("Must be %s %s", e.Tag(), e.Param())
+					details[strings.ToLower(e.Field())] = fmt.Sprintf("Must be %s %s", e.Tag(), e.Param())
 				} else {
-					details[e.Field()] = fmt.Sprintf("Must be %s", e.Tag())
+					details[strings.ToLower(e.Field())] = fmt.Sprintf("Must be %s", e.Tag())
 				}
 
 			}
 		}
 
-		return errorWith(c, http.StatusUnprocessableEntity, "VALIDATION_ERROR", "Invalid input", details)
+		res.Error(c, errs.ValidationFailed.WithDetails(details))
+		return false
 	}
 
 	return true
-}
-
-func errorWith(c *gin.Context, status int, code, message string, details interface{}) bool {
-	res.Error(c, &errs.AppError{
-		Status:  status,
-		Code:    code,
-		Message: message,
-		Details: details,
-	})
-	return false
 }

@@ -6,4 +6,5 @@ type AuthHandler interface {
 	Register(c *gin.Context)
 	Login(c *gin.Context)
 	Logout(c *gin.Context)
+	User(c *gin.Context)
 }

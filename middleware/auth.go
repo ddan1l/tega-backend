@@ -1,4 +1,4 @@
-package auth_middleware
+package middleware
 
 import (
 	"net/http"
@@ -9,6 +9,10 @@ import (
 	res "github.com/ddan1l/tega-backend/web/responses"
 	"github.com/gin-gonic/gin"
 )
+
+type AuthMiddleware interface {
+	Middleware() gin.HandlerFunc
+}
 
 type authMiddleware struct {
 	authUsecase auth_usecase.AuthUsecase
@@ -27,9 +31,9 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 			RefreshToken: utils.SafeGetCookie(c, "RefreshToken"),
 		}
 
-		authenticatedDto, err := m.authUsecase.Authenticate(&pair)
+		r, err := m.authUsecase.Authenticate(&pair)
 
-		if err != nil || authenticatedDto == nil || authenticatedDto.User == nil {
+		if err != nil || r == nil || r.User == nil {
 			m.clearCookies(c)
 
 			res.Error(c, err)
@@ -38,11 +42,15 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 			return
 		}
 
-		if authenticatedDto.AccessToken != "" {
-			m.setAccessTokenCookie(c, authenticatedDto.AccessToken)
+		if r.AccessToken != "" {
+			m.setAccessTokenCookie(c, r.AccessToken)
 		}
 
-		c.Set("user", authenticatedDto.User)
+		c.Set("User", auth_dto.AuthenticatedUserDto{
+			ID:       r.User.ID,
+			Email:    r.User.Email,
+			FullName: r.User.Email,
+		})
 		c.Next()
 	}
 }

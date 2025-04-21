@@ -8,4 +8,6 @@ const (
 	CodeUnauthorized      = "UNAUTHORIZED"
 	CodeForbidden         = "FORBIDDEN"
 	CodeTokenExpired      = "TOKEN_EXPIRED"
+	CodeValidation        = "VALIDATION_ERROR"
+	CodeBadRequest        = "BAD_REQUEST"
 )

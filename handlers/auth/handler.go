@@ -30,9 +30,9 @@ func NewAuthHandler(authUsecase auth_usecase.AuthUsecase) AuthHandler {
 // @Produce json
 // @Param request body req.RegisterUserRequest true "Register credentials"
 // @Success 200 {object} res.SuccessResponse
-// @Failure 400 {object} res.ErrorResponse
-// @Failure 401 {object} res.ErrorResponse
-// @Failure 500 {object} res.ErrorResponse
+// @Response 404 {object} res.ErrorResponse{error=errs.AppError}
+// @Response 409 {object} res.ErrorResponse{error=errs.AlreadyExistsError}
+// @Response 422 {object} res.ErrorResponse{error=errs.ValidationFailedError}
 // @Router /auth/register [post]
 func (h *authHandler) Register(c *gin.Context) {
 	var r req.RegisterUserRequest
@@ -69,9 +69,9 @@ func (h *authHandler) Register(c *gin.Context) {
 // @Produce json
 // @Param request body req.LoginUserRequest true "Login credentials"
 // @Success 200 {object} res.SuccessResponse
-// @Failure 400 {object} res.ErrorResponse
-// @Failure 401 {object} res.ErrorResponse
-// @Failure 500 {object} res.ErrorResponse
+// @Response 404 {object} res.ErrorResponse{error=errs.UserNotFoundError}
+// @Response 401 {object} res.ErrorResponse{error=errs.IncorrectPasswordError}
+// @Response 422 {object} res.ErrorResponse{error=errs.ValidationFailedError}
 // @Router /auth/login [post]
 func (h *authHandler) Login(c *gin.Context) {
 	var r req.LoginUserRequest
@@ -106,9 +106,7 @@ func (h *authHandler) Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} res.SuccessResponse
-// @Failure 400 {object} res.ErrorResponse
-// @Failure 401 {object} res.ErrorResponse
-// @Failure 500 {object} res.ErrorResponse
+// @Response 400 {object} res.ErrorResponse{error=errs.AuthError}
 // @Router /auth/logout [post]
 func (h *authHandler) Logout(c *gin.Context) {
 	refreshToken := utils.SafeGetCookie(c, "RefreshToken")
@@ -133,6 +131,26 @@ func (h *authHandler) Logout(c *gin.Context) {
 	}
 
 	res.Succes(c)
+}
+
+// Logout godoc
+// @Summary User
+// @Description AuthenticatedUser
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.SuccessResponse
+// @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
+// @Router /auth/user [get]
+func (h *authHandler) User(c *gin.Context) {
+	user, _ := c.Get("User")
+
+	// if !exists {
+	// 	res.Error(c, errs.Forbidden)
+	// 	return
+	// }
+
+	res.SuccessWithData(c, user)
 }
 
 func (h *authHandler) setAuthCookies(c *gin.Context, pair *auth_dto.TokensPairDto, exp *auth_dto.TokensPairExpirationDto) {
