@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	AccessTokenMaxAge  = time.Second * 10
+	AccessTokenMaxAge  = time.Minute * 15
 	RefreshTokenMaxAge = time.Hour * 24 * 14
 )
 

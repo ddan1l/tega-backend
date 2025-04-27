@@ -39,12 +39,6 @@ type (
 		AccessToken string
 	}
 
-	AuthenticatedUserDto struct {
-		ID       int    `json:"id" example:"1"`
-		FullName string `json:"fullname" example:"John"`
-		Email    string `json:"email" example:"john@john.com"`
-	}
-
 	RegisterUserDto struct {
 		FullName string
 		Email    string

@@ -7,16 +7,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type Token struct {
+type ProjectUsers struct {
 	gorm.Model
 
-	ID    int `gorm:"primaryKey;autoIncrement"`
-	Token string
+	ID int `gorm:"primaryKey;autoIncrement"`
 
 	UserID int
 	User   User `gorm:"foreignKey:UserID"`
 
-	ExpiresAt time.Time `gorm:"default:current_timestamp"`
+	ProjectID int
+	Project   Project `gorm:"foreignKey:ProjectID"`
+
+	RoleID int
+	Role   Role `gorm:"foreignKey:RoleID"`
+
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime

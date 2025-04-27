@@ -1,8 +1,10 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/ddan1l/tega-backend/ctx"
 	auth_dto "github.com/ddan1l/tega-backend/dto/auth"
 	auth_usecase "github.com/ddan1l/tega-backend/usecases/auth"
 	"github.com/ddan1l/tega-backend/utils"
@@ -33,6 +35,8 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 
 		r, err := m.authUsecase.Authenticate(&pair)
 
+		log.Println(pair)
+
 		if err != nil || r == nil || r.User == nil {
 			m.clearCookies(c)
 
@@ -46,11 +50,12 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 			m.setAccessTokenCookie(c, r.AccessToken)
 		}
 
-		c.Set("User", auth_dto.AuthenticatedUserDto{
+		c.Set("User", ctx.UserContext{
 			ID:       r.User.ID,
 			Email:    r.User.Email,
-			FullName: r.User.Email,
+			FullName: r.User.FullName,
 		})
+
 		c.Next()
 	}
 }
@@ -61,7 +66,7 @@ func (m *authMiddleware) setAccessTokenCookie(c *gin.Context, token string) {
 		Value:    token,
 		MaxAge:   int(auth_usecase.AccessTokenMaxAge.Seconds()),
 		Path:     "/",
-		Domain:   "",
+		Domain:   ".tega.local",
 		Secure:   false,
 		HttpOnly: true,
 	}
@@ -75,7 +80,7 @@ func (m *authMiddleware) clearCookies(c *gin.Context) {
 		Value:    "",
 		MaxAge:   -1,
 		Path:     "/",
-		Domain:   "",
+		Domain:   ".tega.local",
 		Secure:   false,
 		HttpOnly: true,
 	}
@@ -85,7 +90,7 @@ func (m *authMiddleware) clearCookies(c *gin.Context) {
 		Value:    "",
 		MaxAge:   -1,
 		Path:     "/",
-		Domain:   "",
+		Domain:   ".tega.local",
 		Secure:   false,
 		HttpOnly: true,
 	}

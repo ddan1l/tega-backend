@@ -10,17 +10,17 @@ type SuccessResponse struct {
 	Success bool `json:"success" example:"true"`
 }
 
-type SuccessWithDataResponse[T any] struct {
+type SuccessWithDataResponse struct {
 	Success bool `json:"success" example:"true"`
-	Data    T    `json:"data"`
+	Data    any  `json:"data"`
 }
 
 func Succes(c *gin.Context) {
 	c.JSON(http.StatusOK, SuccessResponse{Success: true})
 }
 
-func SuccessWithData[T any](c *gin.Context, data T) {
-	c.JSON(http.StatusOK, SuccessWithDataResponse[T]{
+func SuccessWithData(c *gin.Context, data any) {
+	c.JSON(http.StatusOK, SuccessWithDataResponse{
 		Success: true,
 		Data:    data,
 	})
