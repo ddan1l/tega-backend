@@ -14,24 +14,8 @@ func NewProjectPgRepository(db database.Database) ProjectRepository {
 	return &projectPgRepository{db: db}
 }
 
-func (r *projectPgRepository) Create(in *user_dto.CreateUserDto) (*models.User, error) {
-	user := &models.User{
-		FullName:     in.FullName,
-		Email:        in.Email,
-		PasswordHash: in.PasswordHash,
-	}
-
-	result := r.db.GetDb().Create(&user)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return user, nil
-}
-
-func (r *projectPgRepository) FindByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error) {
-	var projectUsers []models.ProjectUsers
+func (r *projectPgRepository) FindProjectsByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error) {
+	var projectUsers []models.ProjectUser
 
 	result := r.db.GetDb().Preload("Project").Where("user_id = ?", in.ID).Find(&projectUsers)
 
@@ -46,4 +30,36 @@ func (r *projectPgRepository) FindByUserId(in *user_dto.FindByIdDto) (*[]models.
 	}
 
 	return &projects, nil
+}
+
+func (r *projectPgRepository) CreateProject(in *user_dto.ProjectDto) (*models.Project, error) {
+	project := &models.Project{
+		Name:        in.Name,
+		Slug:        in.Slug,
+		Description: in.Description,
+	}
+
+	result := r.db.GetDb().Create(&project)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return project, nil
+}
+
+func (r *projectPgRepository) CreateProjectUser(in *user_dto.ProjectUserDto) (*models.ProjectUser, error) {
+	projectUser := &models.ProjectUser{
+		RoleID:    in.RoleID,
+		UserID:    in.UserID,
+		ProjectID: in.ProjectID,
+	}
+
+	result := r.db.GetDb().Create(&projectUser)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return projectUser, nil
 }

@@ -88,4 +88,6 @@ func (s *ginServer) initializeUserHandler() {
 
 	g.GET("/", userHandler.User)
 	g.GET("/projects", userHandler.UserProjects)
+
+	g.POST("/project", userHandler.CreateProject)
 }

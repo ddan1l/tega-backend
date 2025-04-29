@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProjectUsers struct {
+type ProjectUser struct {
 	gorm.Model
 
 	ID int `gorm:"primaryKey;autoIncrement"`

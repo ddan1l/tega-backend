@@ -5,6 +5,7 @@ import (
 	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	user_usercase "github.com/ddan1l/tega-backend/usecases/user"
+	req "github.com/ddan1l/tega-backend/web/requests"
 	res "github.com/ddan1l/tega-backend/web/responses"
 	"github.com/gin-gonic/gin"
 )
@@ -73,6 +74,53 @@ func (h *userHandler) UserProjects(c *gin.Context) {
 
 		r := &res.UserProjectsResponse{
 			Projects: dto.Projects,
+		}
+
+		res.SuccessWithData(c, r)
+	}
+}
+
+// Logout godoc
+// @Summary Create Project
+// @Description Create Project
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body req.CreateProjectRequest true "Create project request"
+// @Success 200 {object} res.SuccessWithDataResponse{data=res.UserProjectResponse}
+// @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
+// @Response 400 {object} res.ErrorResponse{error=errs.BadRequestError}
+// @Response 422 {object} res.ErrorResponse{error=errs.ValidationFailedError}
+// @Router /user/project [post]
+func (h *userHandler) CreateProject(c *gin.Context) {
+	var r req.CreateProjectRequest
+
+	if !req.BindAndValidate(c, &r) {
+		return
+	}
+
+	if user, err := ctx.GetUserFromContext(c); err != nil {
+		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
+	} else {
+
+		createProjectDto := &user_dto.CreateProjectDto{
+			Project: &user_dto.ProjectDto{
+				Name:        r.Name,
+				Slug:        r.Slug,
+				Description: r.Description,
+			},
+			User: user,
+		}
+
+		dto, err := h.userUsecase.CreateProject(createProjectDto)
+
+		if err != nil {
+			res.Error(c, errs.BadRequest.WithMessage(err.Error()))
+			return
+		}
+
+		r := &res.UserProjectResponse{
+			Project: *dto,
 		}
 
 		res.SuccessWithData(c, r)

@@ -93,6 +93,20 @@ definitions:
         example: 422
         type: integer
     type: object
+  req.CreateProjectRequest:
+    properties:
+      description:
+        type: string
+      name:
+        minLength: 3
+        type: string
+      slug:
+        minLength: 3
+        type: string
+    required:
+    - name
+    - slug
+    type: object
   req.LoginUserRequest:
     properties:
       email:
@@ -142,6 +156,11 @@ definitions:
         example: true
         type: boolean
     type: object
+  res.UserProjectResponse:
+    properties:
+      project:
+        $ref: '#/definitions/user_dto.ProjectDto'
+    type: object
   res.UserProjectsResponse:
     properties:
       projects:
@@ -163,6 +182,8 @@ definitions:
     type: object
   user_dto.ProjectDto:
     properties:
+      description:
+        type: string
       id:
         type: integer
       name:
@@ -322,6 +343,60 @@ paths:
                   $ref: '#/definitions/errs.ForbiddenError'
               type: object
       summary: User
+      tags:
+      - user
+  /user/project:
+    post:
+      consumes:
+      - application/json
+      description: Create Project
+      parameters:
+      - description: Create project request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.SuccessWithDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.UserProjectResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.BadRequestError'
+              type: object
+        "403":
+          description: Forbidden
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ForbiddenError'
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ValidationFailedError'
+              type: object
+      summary: Create Project
       tags:
       - user
   /user/projects:

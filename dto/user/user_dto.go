@@ -14,14 +14,4 @@ type (
 	FindByEmailDto struct {
 		Email string
 	}
-
-	ProjectDto struct {
-		ID   int
-		Name string
-		Slug string
-	}
-
-	ProjectsDto struct {
-		Projects []ProjectDto
-	}
 )

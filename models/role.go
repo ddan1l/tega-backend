@@ -7,12 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Name string
+type ID int
 
 const (
-	Owner  Name = "owner"
-	Member Name = "member"
-	Viewer Name = "viewer"
+	Owner  ID = 1
+	Member ID = 2
+	Viewer ID = 3
 )
 
 type Role struct {

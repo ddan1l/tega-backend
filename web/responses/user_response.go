@@ -13,3 +13,7 @@ type UserResponse struct {
 type UserProjectsResponse struct {
 	Projects []user_dto.ProjectDto `json:"projects"`
 }
+
+type UserProjectResponse struct {
+	Project user_dto.ProjectDto `json:"project"`
+}

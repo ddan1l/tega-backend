@@ -7,4 +7,5 @@ import (
 
 type UserUsecase interface {
 	GetUserProjects(in *user_dto.FindByIdDto) (*user_dto.ProjectsDto, *errs.AppError)
+	CreateProject(in *user_dto.CreateProjectDto) (*user_dto.ProjectDto, *errs.AppError)
 }

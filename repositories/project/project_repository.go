@@ -6,5 +6,7 @@ import (
 )
 
 type ProjectRepository interface {
-	FindByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error)
+	FindProjectsByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error)
+	CreateProject(in *user_dto.ProjectDto) (*models.Project, error)
+	CreateProjectUser(in *user_dto.ProjectUserDto) (*models.ProjectUser, error)
 }

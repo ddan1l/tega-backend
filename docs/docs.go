@@ -286,6 +286,106 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/project": {
+            "post": {
+                "description": "Create Project",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create Project",
+                "parameters": [
+                    {
+                        "description": "Create project request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateProjectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.SuccessWithDataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.UserProjectResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.BadRequestError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.ForbiddenError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.ValidationFailedError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/user/projects": {
             "get": {
                 "description": "UserProjects",
@@ -493,6 +593,26 @@ const docTemplate = `{
                 }
             }
         },
+        "req.CreateProjectRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 3
+                }
+            }
+        },
         "req.LoginUserRequest": {
             "type": "object",
             "required": [
@@ -563,6 +683,14 @@ const docTemplate = `{
                 }
             }
         },
+        "res.UserProjectResponse": {
+            "type": "object",
+            "properties": {
+                "project": {
+                    "$ref": "#/definitions/user_dto.ProjectDto"
+                }
+            }
+        },
         "res.UserProjectsResponse": {
             "type": "object",
             "properties": {
@@ -594,6 +722,9 @@ const docTemplate = `{
         "user_dto.ProjectDto": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },

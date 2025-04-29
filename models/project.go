@@ -10,9 +10,10 @@ import (
 type Project struct {
 	gorm.Model
 
-	ID   int `gorm:"primaryKey;autoIncrement"`
-	Name string
-	Slug string
+	ID          int `gorm:"primaryKey;autoIncrement"`
+	Name        string
+	Slug        string
+	Description string
 
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time
