@@ -60,6 +60,7 @@ func (u *userUsecaseImpl) CreateProject(in *user_dto.CreateProjectDto) (*user_dt
 			return nil, errs.BadRequest.WithError(err)
 		} else {
 			return &user_dto.ProjectDto{
+				ID:          project.ID,
 				Name:        project.Name,
 				Slug:        project.Slug,
 				Description: project.Description,

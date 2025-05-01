@@ -15,10 +15,10 @@ type (
 	}
 
 	ProjectDto struct {
-		ID          int
-		Name        string
-		Slug        string
-		Description string
+		ID          int    `json:"id" example:"1"`
+		Name        string `json:"name" example:"test"`
+		Slug        string `json:"slug" example:"test"`
+		Description string `json:"description" example:"test description"`
 	}
 
 	ProjectsDto struct {
