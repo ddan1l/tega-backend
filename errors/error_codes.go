@@ -1,7 +1,7 @@
 package errs
 
 const (
-	CodeAlreadyExists     = "USER_ALREADY_EXISTS"
+	CodeAlreadyExists     = "ALREADY_EXISTS"
 	CodeIncorrectPassword = "INCORRECT_PASSWORD"
 	CodeUserNotFound      = "USER_NOT_FOUND"
 	CodeAuthFailed        = "FAILED_AUTH_USER"

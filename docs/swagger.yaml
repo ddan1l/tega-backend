@@ -93,6 +93,21 @@ definitions:
         example: 422
         type: integer
     type: object
+  project_dto.ProjectDto:
+    properties:
+      description:
+        example: test description
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: test
+        type: string
+      slug:
+        example: test
+        type: string
+    type: object
   req.CreateProjectRequest:
     properties:
       description:
@@ -159,13 +174,13 @@ definitions:
   res.UserProjectResponse:
     properties:
       project:
-        $ref: '#/definitions/user_dto.ProjectDto'
+        $ref: '#/definitions/project_dto.ProjectDto'
     type: object
   res.UserProjectsResponse:
     properties:
       projects:
         items:
-          $ref: '#/definitions/user_dto.ProjectDto'
+          $ref: '#/definitions/project_dto.ProjectDto'
         type: array
     type: object
   res.UserResponse:
@@ -179,17 +194,6 @@ definitions:
       id:
         example: 1
         type: integer
-    type: object
-  user_dto.ProjectDto:
-    properties:
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      slug:
-        type: string
     type: object
 info:
   contact: {}

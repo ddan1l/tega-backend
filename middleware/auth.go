@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ddan1l/tega-backend/ctx"
@@ -34,8 +33,6 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 		}
 
 		r, err := m.authUsecase.Authenticate(&pair)
-
-		log.Println(pair)
 
 		if err != nil || r == nil || r.User == nil {
 			m.clearCookies(c)

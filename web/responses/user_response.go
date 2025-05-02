@@ -1,7 +1,7 @@
 package res
 
 import (
-	user_dto "github.com/ddan1l/tega-backend/dto/user"
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 )
 
 type UserResponse struct {
@@ -11,9 +11,9 @@ type UserResponse struct {
 }
 
 type UserProjectsResponse struct {
-	Projects []user_dto.ProjectDto `json:"projects"`
+	Projects []project_dto.ProjectDto `json:"projects"`
 }
 
 type UserProjectResponse struct {
-	Project user_dto.ProjectDto `json:"project"`
+	Project project_dto.ProjectDto `json:"project"`
 }

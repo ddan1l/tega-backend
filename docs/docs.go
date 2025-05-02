@@ -593,6 +593,27 @@ const docTemplate = `{
                 }
             }
         },
+        "project_dto.ProjectDto": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "test description"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "test"
+                },
+                "slug": {
+                    "type": "string",
+                    "example": "test"
+                }
+            }
+        },
         "req.CreateProjectRequest": {
             "type": "object",
             "required": [
@@ -687,7 +708,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "project": {
-                    "$ref": "#/definitions/user_dto.ProjectDto"
+                    "$ref": "#/definitions/project_dto.ProjectDto"
                 }
             }
         },
@@ -697,7 +718,7 @@ const docTemplate = `{
                 "projects": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_dto.ProjectDto"
+                        "$ref": "#/definitions/project_dto.ProjectDto"
                     }
                 }
             }
@@ -716,23 +737,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
-                }
-            }
-        },
-        "user_dto.ProjectDto": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
                 }
             }
         }

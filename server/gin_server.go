@@ -86,7 +86,7 @@ func (s *ginServer) initializeUserHandler() {
 
 	g := s.app.Group("/api/user")
 
-	g.GET("/", userHandler.User)
+	g.GET("", userHandler.User)
 	g.GET("/projects", userHandler.UserProjects)
 
 	g.POST("/project", userHandler.CreateProject)

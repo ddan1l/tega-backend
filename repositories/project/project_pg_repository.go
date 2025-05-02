@@ -1,9 +1,13 @@
 package project_repository
 
 import (
+	"errors"
+
 	"github.com/ddan1l/tega-backend/database"
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	"github.com/ddan1l/tega-backend/models"
+	"gorm.io/gorm"
 )
 
 type projectPgRepository struct {
@@ -32,7 +36,25 @@ func (r *projectPgRepository) FindProjectsByUserId(in *user_dto.FindByIdDto) (*[
 	return &projects, nil
 }
 
-func (r *projectPgRepository) CreateProject(in *user_dto.ProjectDto) (*models.Project, error) {
+func (r *projectPgRepository) FindProjectsBySlug(in *project_dto.FindBySlugDto) (*models.Project, error) {
+	var project models.Project
+
+	result := r.db.GetDb().Where(models.Project{
+		Slug: in.Slug,
+	}).First(&project)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, result.Error
+	}
+
+	return &project, nil
+}
+
+func (r *projectPgRepository) CreateProject(in *project_dto.ProjectDto) (*models.Project, error) {
 	project := &models.Project{
 		Name:        in.Name,
 		Slug:        in.Slug,
@@ -48,7 +70,7 @@ func (r *projectPgRepository) CreateProject(in *user_dto.ProjectDto) (*models.Pr
 	return project, nil
 }
 
-func (r *projectPgRepository) CreateProjectUser(in *user_dto.ProjectUserDto) (*models.ProjectUser, error) {
+func (r *projectPgRepository) CreateProjectUser(in *project_dto.ProjectUserDto) (*models.ProjectUser, error) {
 	projectUser := &models.ProjectUser{
 		RoleID:    in.RoleID,
 		UserID:    in.UserID,

@@ -1,4 +1,4 @@
-package user_dto
+package project_dto
 
 import "github.com/ddan1l/tega-backend/ctx"
 
@@ -12,6 +12,10 @@ type (
 	CreateProjectDto struct {
 		Project *ProjectDto
 		User    *ctx.UserContext
+	}
+
+	FindBySlugDto struct {
+		Slug string
 	}
 
 	ProjectDto struct {

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,8 @@ func CORSMiddleware() gin.HandlerFunc {
 		// 	}
 		// }
 		// log.Println(origin)
+
+		log.Println(c.Request.Header.Get("X-Subdomain"))
 
 		origin := c.Request.Header.Get("Origin")
 

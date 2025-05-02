@@ -2,6 +2,7 @@ package user_handler
 
 import (
 	"github.com/ddan1l/tega-backend/ctx"
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	user_usercase "github.com/ddan1l/tega-backend/usecases/user"
@@ -103,8 +104,8 @@ func (h *userHandler) CreateProject(c *gin.Context) {
 		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
 	} else {
 
-		createProjectDto := &user_dto.CreateProjectDto{
-			Project: &user_dto.ProjectDto{
+		createProjectDto := &project_dto.CreateProjectDto{
+			Project: &project_dto.ProjectDto{
 				Name:        r.Name,
 				Slug:        r.Slug,
 				Description: r.Description,
@@ -115,7 +116,7 @@ func (h *userHandler) CreateProject(c *gin.Context) {
 		dto, err := h.userUsecase.CreateProject(createProjectDto)
 
 		if err != nil {
-			res.Error(c, errs.BadRequest.WithMessage(err.Error()))
+			res.Error(c, err)
 			return
 		}
 

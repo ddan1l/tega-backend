@@ -1,6 +1,7 @@
 package user_usercase
 
 import (
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	"github.com/ddan1l/tega-backend/models"
@@ -23,17 +24,17 @@ func NewUserUsecaseImpl(
 	}
 }
 
-func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*user_dto.ProjectsDto, *errs.AppError) {
+func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*project_dto.ProjectsDto, *errs.AppError) {
 	projects, err := u.projectRepository.FindProjectsByUserId(in)
 
 	if err != nil {
 		return nil, errs.BadRequest.WithError(err)
 	}
 
-	userProjects := make([]user_dto.ProjectDto, len(*projects))
+	userProjects := make([]project_dto.ProjectDto, len(*projects))
 
 	for i, project := range *projects {
-		userProjects[i] = user_dto.ProjectDto{
+		userProjects[i] = project_dto.ProjectDto{
 			ID:          project.ID,
 			Name:        project.Name,
 			Slug:        project.Slug,
@@ -41,16 +42,34 @@ func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*user_dto.P
 		}
 	}
 
-	return &user_dto.ProjectsDto{
+	return &project_dto.ProjectsDto{
 		Projects: userProjects,
 	}, nil
 }
 
-func (u *userUsecaseImpl) CreateProject(in *user_dto.CreateProjectDto) (*user_dto.ProjectDto, *errs.AppError) {
+func (u *userUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*project_dto.ProjectDto, *errs.AppError) {
+	project, err := u.projectRepository.FindProjectsBySlug(&project_dto.FindBySlugDto{
+		Slug: in.Project.Slug,
+	})
+
+	if err != nil {
+		return nil, errs.BadRequest.WithError(err)
+	}
+
+	if project != nil {
+		var details = make(map[string]string)
+
+		details["slug"] = "Project with slug already exists."
+
+		return nil, errs.AlreadyExists.WithDetails(
+			details,
+		)
+	}
+
 	if project, err := u.projectRepository.CreateProject(in.Project); err != nil {
 		return nil, errs.BadRequest.WithError(err)
 	} else {
-		projectUser := &user_dto.ProjectUserDto{
+		projectUser := &project_dto.ProjectUserDto{
 			UserID:    in.User.ID,
 			RoleID:    int(models.Owner),
 			ProjectID: project.ID,
@@ -59,7 +78,7 @@ func (u *userUsecaseImpl) CreateProject(in *user_dto.CreateProjectDto) (*user_dt
 		if _, err := u.projectRepository.CreateProjectUser(projectUser); err != nil {
 			return nil, errs.BadRequest.WithError(err)
 		} else {
-			return &user_dto.ProjectDto{
+			return &project_dto.ProjectDto{
 				ID:          project.ID,
 				Name:        project.Name,
 				Slug:        project.Slug,
