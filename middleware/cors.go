@@ -1,13 +1,19 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CORSMiddleware() gin.HandlerFunc {
+type corsMiddleware struct {
+}
+
+func NewCORSMiddleware() Middleware {
+	return &corsMiddleware{}
+}
+
+func (m *corsMiddleware) Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// allowedOrigins := []string{
 		// 	"https://example.com",
@@ -22,9 +28,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		// 	}
 		// }
 		// log.Println(origin)
-
-		log.Println(c.Request.Header.Get("X-Subdomain"))
-
 		origin := c.Request.Header.Get("Origin")
 
 		c.Writer.Header().Set("Access-Control-Allow-Origin", origin)

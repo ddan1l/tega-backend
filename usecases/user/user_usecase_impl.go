@@ -24,6 +24,29 @@ func NewUserUsecaseImpl(
 	}
 }
 
+func (u *userUsecaseImpl) CheckIsUserInProject(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectDto, *errs.AppError) {
+	projects, err := u.projectRepository.FindProjectsByUserId(&user_dto.FindByIdDto{
+		ID: in.UserID,
+	})
+
+	if err != nil {
+		return nil, errs.BadRequest.WithError(err)
+	}
+
+	for _, project := range *projects {
+		if project.Slug == in.Slug {
+			return &project_dto.ProjectDto{
+				ID:          project.ID,
+				Name:        project.Name,
+				Slug:        project.Slug,
+				Description: project.Description,
+			}, nil
+		}
+	}
+
+	return nil, errs.NotFound.WithMessage("Project not found.")
+}
+
 func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*project_dto.ProjectsDto, *errs.AppError) {
 	projects, err := u.projectRepository.FindProjectsByUserId(in)
 

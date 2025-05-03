@@ -7,6 +7,7 @@ import (
 )
 
 type UserUsecase interface {
+	CheckIsUserInProject(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectDto, *errs.AppError)
 	GetUserProjects(in *user_dto.FindByIdDto) (*project_dto.ProjectsDto, *errs.AppError)
 	CreateProject(in *project_dto.CreateProjectDto) (*project_dto.ProjectDto, *errs.AppError)
 }

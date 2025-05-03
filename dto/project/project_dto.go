@@ -18,6 +18,11 @@ type (
 		Slug string
 	}
 
+	FindBySlugAndUserIdDto struct {
+		Slug   string
+		UserID int
+	}
+
 	ProjectDto struct {
 		ID          int    `json:"id" example:"1"`
 		Name        string `json:"name" example:"test"`

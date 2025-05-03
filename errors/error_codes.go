@@ -10,4 +10,5 @@ const (
 	CodeTokenExpired      = "TOKEN_EXPIRED"
 	CodeValidation        = "VALIDATION_ERROR"
 	CodeBadRequest        = "BAD_REQUEST"
+	CodeNotFound          = "NOT_FOUND"
 )

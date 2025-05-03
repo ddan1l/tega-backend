@@ -13,3 +13,10 @@ var BadRequest = &AppError{
 	Message: "Bad request.",
 	Details: make(map[string]string),
 }
+
+var NotFound = &AppError{
+	Status:  404,
+	Code:    CodeNotFound,
+	Message: "Not found.",
+	Details: make(map[string]string),
+}

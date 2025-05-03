@@ -11,15 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthMiddleware interface {
-	Middleware() gin.HandlerFunc
-}
-
 type authMiddleware struct {
 	authUsecase auth_usecase.AuthUsecase
 }
 
-func NewAuthMiddleware(authUsecase auth_usecase.AuthUsecase) AuthMiddleware {
+func NewAuthMiddleware(authUsecase auth_usecase.AuthUsecase) Middleware {
 	return &authMiddleware{
 		authUsecase: authUsecase,
 	}

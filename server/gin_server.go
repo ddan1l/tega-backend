@@ -40,8 +40,7 @@ func NewGinServer(conf *config.Config, db database.Database) Server {
 }
 
 func (s *ginServer) Start() {
-
-	s.app.Use(middleware.CORSMiddleware())
+	s.app.Use(middleware.NewCORSMiddleware().Middleware())
 
 	if os.Getenv("ENV") != "production" {
 		s.app.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -56,12 +55,17 @@ func (s *ginServer) initializeHandlers() {
 	// Public routes
 	s.initializeAuthHandler()
 
-	// Below Protected routes
+	// Protected routes
 	authMiddleware := middleware.NewAuthMiddleware(
 		s.factory.CreateAuthUseCase(),
 	)
 
+	subdomainMiddleware := middleware.NewSubdomainMiddleware(
+		s.factory.CreateUserhUseCase(),
+	)
+
 	s.app.Use(authMiddleware.Middleware())
+	s.app.Use(subdomainMiddleware.Middleware())
 
 	s.initializeUserHandler()
 }
