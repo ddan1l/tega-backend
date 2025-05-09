@@ -18,6 +18,10 @@ func NewProjectPgRepository(db database.Database) ProjectRepository {
 	return &projectPgRepository{db: db}
 }
 
+func (r *projectPgRepository) WithTx(db database.Database) ProjectRepository {
+	return &projectPgRepository{db: db}
+}
+
 func (r *projectPgRepository) FindProjectsByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error) {
 	var projectUsers []models.ProjectUser
 

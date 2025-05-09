@@ -11,8 +11,14 @@ FRONTEND_DIR := $(PARENT_DIR)/tega-frontend
 diff:
 	atlas migrate diff --env gorm --dev-url "docker://postgres/15/dev?search_path=public"
 
+diff-schema:
+	atlas migrate diff --to "file://schema.hcl" --env gorm --dev-url "docker://postgres/15/dev?search_path=public"
+
 migrate:
 	atlas migrate apply --env gorm
+
+migrate-new:
+	atlas migrate new
 
 visualize:
 	atlas schema inspect --env gorm --url env://src -w --dev-url "docker://postgres/15/dev?search_path=public"

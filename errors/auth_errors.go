@@ -3,7 +3,7 @@ package errs
 var AlreadyExists = &AppError{
 	Status:  409,
 	Code:    CodeAlreadyExists,
-	Message: "User already exists.",
+	Message: "Already exists.",
 }
 
 var IncorrectPassword = &AppError{

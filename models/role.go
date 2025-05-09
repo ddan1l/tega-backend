@@ -9,17 +9,15 @@ import (
 
 type ID int
 
-const (
-	Owner  ID = 1
-	Member ID = 2
-	Viewer ID = 3
-)
-
 type Role struct {
 	gorm.Model
 
-	ID   int `gorm:"primaryKey;autoIncrement"`
-	Name string
+	ID    int `gorm:"primaryKey;autoIncrement"`
+	Title string
+	Slug  string
+
+	ProjectID int
+	Project   Project `gorm:"foreignKey:ProjectID"`
 
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time

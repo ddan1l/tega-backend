@@ -1,26 +1,36 @@
 package user_usercase
 
 import (
+	"github.com/ddan1l/tega-backend/abac"
+	"github.com/ddan1l/tega-backend/database"
+	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	"github.com/ddan1l/tega-backend/models"
 	project_repository "github.com/ddan1l/tega-backend/repositories/project"
 	user_repository "github.com/ddan1l/tega-backend/repositories/user"
+	"github.com/ddan1l/tega-backend/transaction"
 )
 
 type userUsecaseImpl struct {
 	projectRepository project_repository.ProjectRepository
 	userRepository    user_repository.UserRepository
+	abac              abac.Engine
+	txManager         transaction.TxManager
 }
 
 func NewUserUsecaseImpl(
 	userRepository user_repository.UserRepository,
 	projectRepository project_repository.ProjectRepository,
+	abac abac.Engine,
+	txManager transaction.TxManager,
 ) UserUsecase {
 	return &userUsecaseImpl{
 		userRepository:    userRepository,
 		projectRepository: projectRepository,
+		abac:              abac,
+		txManager:         txManager,
 	}
 }
 
@@ -71,44 +81,67 @@ func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*project_dt
 }
 
 func (u *userUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*project_dto.ProjectDto, *errs.AppError) {
-	project, err := u.projectRepository.FindProjectsBySlug(&project_dto.FindBySlugDto{
+	// Check is project exists
+	if project, err := u.projectRepository.FindProjectsBySlug(&project_dto.FindBySlugDto{
 		Slug: in.Project.Slug,
-	})
+	}); err != nil || project != nil {
+		if err != nil {
+			return nil, errs.BadRequest.WithError(err)
+		}
 
-	if err != nil {
-		return nil, errs.BadRequest.WithError(err)
+		if project != nil {
+			return nil, errs.AlreadyExists.WithDetails(map[string]string{
+				"slug": "Project with slug already exists.",
+			})
+		}
 	}
 
-	if project != nil {
-		var details = make(map[string]string)
+	var (
+		result  *project_dto.ProjectDto
+		project *models.Project
+		admin   *abac_dto.RoleDto
+		err     error
+	)
 
-		details["slug"] = "Project with slug already exists."
+	// Run all in transaction
+	txErr := u.txManager.CallWithTx(func(tx database.Database) *errs.AppError {
 
-		return nil, errs.AlreadyExists.WithDetails(
-			details,
-		)
-	}
+		// Create project
+		project, err = u.projectRepository.WithTx(tx).CreateProject(in.Project)
 
-	if project, err := u.projectRepository.CreateProject(in.Project); err != nil {
-		return nil, errs.BadRequest.WithError(err)
-	} else {
+		if err != nil {
+			return errs.BadRequest.WithError(err)
+		}
+
+		// Create default policies
+		admin, err = u.abac.WithTx(tx).CreateDefaultPolicies(&abac_dto.CreateDefaultPoliciesDto{
+			ProjectID: project.ID,
+		})
+
+		if err != nil {
+			return errs.BadRequest.WithError(err)
+		}
+
 		projectUser := &project_dto.ProjectUserDto{
 			UserID:    in.User.ID,
-			RoleID:    int(models.Owner),
+			RoleID:    admin.Role.ID,
 			ProjectID: project.ID,
 		}
 
-		if _, err := u.projectRepository.CreateProjectUser(projectUser); err != nil {
-			return nil, errs.BadRequest.WithError(err)
-		} else {
-			return &project_dto.ProjectDto{
-				ID:          project.ID,
-				Name:        project.Name,
-				Slug:        project.Slug,
-				Description: project.Description,
-			}, nil
+		// Create project user
+		if _, err = u.projectRepository.WithTx(tx).CreateProjectUser(projectUser); err != nil {
+			return errs.BadRequest.WithError(err)
 		}
 
-	}
+		result = &project_dto.ProjectDto{
+			ID:          project.ID,
+			Name:        project.Name,
+			Slug:        project.Slug,
+			Description: project.Description,
+		}
 
+		return nil
+	})
+
+	return result, txErr
 }

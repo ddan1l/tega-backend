@@ -21,5 +21,7 @@ func (f *DefaultFactory) CreateUserhUseCase() user_usercase.UserUsecase {
 	return user_usercase.NewUserUsecaseImpl(
 		f.CreateUserRepository(),
 		f.CreateProjectRepository(),
+		f.CreateABAC(),
+		f.CreateTxManager(),
 	)
 }
