@@ -1,3 +1,14 @@
+data "composite_schema" "app" {
+  # Load enum types first.
+  schema "public" {
+    url = "file://schema.hcl"
+  }
+  # Then, load the GORM models.
+  schema "public" {
+    url = data.external_schema.gorm.url
+  }
+}
+
 data "external_schema" "gorm" {
   program = [
   "go",
@@ -8,6 +19,11 @@ data "external_schema" "gorm" {
    "--path", "./models",
    "--dialect", "postgres",
   ]
+}
+
+env "local" {
+  src = data.composite_schema.app.url
+  dev = "docker://postgres/15/dev?search_path=public"
 }
 
 env "gorm" {
