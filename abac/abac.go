@@ -10,6 +10,6 @@ import (
 type Engine interface {
 	CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*abac_dto.RoleDto, error)
 	LoadProjectPolicies(in *abac_dto.LoadProjectPoliciesDto) (*abac_dto.PoliciesDto, error)
-	CheckAccess(user *project_dto.ProjectUserDto, action models.ActionType, resource models.ResourceType)
+	CheckAccess(user *project_dto.ProjectUserDto, action models.ActionType, resource models.ResourceType) bool
 	WithTx(db database.Database) Engine
 }

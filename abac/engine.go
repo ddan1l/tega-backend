@@ -1,8 +1,6 @@
 package abac
 
 import (
-	"log"
-
 	"github.com/ddan1l/tega-backend/database"
 	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
@@ -22,7 +20,6 @@ func (e *engine) WithTx(db database.Database) Engine {
 }
 
 func (e *engine) CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*abac_dto.RoleDto, error) {
-	// Создаем роли
 	roles := []models.Role{
 		{Slug: "admin", ProjectID: in.ProjectID},
 		{Slug: "developer", ProjectID: in.ProjectID},
@@ -117,72 +114,44 @@ func (e *engine) LoadProjectPolicies(in *abac_dto.LoadProjectPoliciesDto) (*abac
 	}, nil
 }
 
-func (e *engine) CheckAccess(user *project_dto.ProjectUserDto, action models.ActionType, resource models.ResourceType) {
-	log.Println(user, action, resource)
+func (e *engine) CheckAccess(user *project_dto.ProjectUserDto, action models.ActionType, resource models.ResourceType) bool {
+	policies, err := e.LoadProjectPolicies(&abac_dto.LoadProjectPoliciesDto{
+		ProjectID: user.ProjectID,
+	})
+
+	if err != nil {
+		return false
+	}
+
+	for _, policy := range *policies.Policies {
+		if policy.RoleID != user.RoleID {
+			continue
+		}
+
+		actionAllowed := false
+		for _, a := range policy.Actions {
+			if a.Action == action {
+				actionAllowed = true
+				break
+			}
+		}
+		if !actionAllowed {
+			continue
+		}
+
+		resourceAllowed := false
+		for _, r := range policy.Resources {
+			if r.Resource == resource {
+				resourceAllowed = true
+				break
+			}
+		}
+		if !resourceAllowed {
+			continue
+		}
+
+		return policy.Effect == "allow"
+	}
+
+	return false
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-////
-//
-////
-//
-////
-//
-//////
-//
-//
-//
-////
-//
-//
-
-//
-
-// func checkAccess(policies []models.Policy, user models.ProjectUser, action string, resource string) bool {
-// 	for _, policy := range policies {
-// 		// Проверяем роль
-// 		if policy.Role != user.Role {
-// 			continue
-// 		}
-
-// 		// Проверяем действие
-// 		actionAllowed := false
-// 		for _, a := range policy.Actions {
-// 			if a == action {
-// 				actionAllowed = true
-// 				break
-// 			}
-// 		}
-// 		if !actionAllowed {
-// 			continue
-// 		}
-
-// 		// Проверяем ресурс
-// 		resourceAllowed := false
-// 		for _, r := range policy.Resources {
-// 			if r == resource {
-// 				resourceAllowed = true
-// 				break
-// 			}
-// 		}
-// 		if !resourceAllowed {
-// 			continue
-// 		}
-
-// 		// Если все проверки пройдены
-// 		return policy.Effect == "allow"
-// 	}
-
-// 	return false
-// }

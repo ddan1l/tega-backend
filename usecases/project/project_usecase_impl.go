@@ -32,15 +32,23 @@ func NewProjectUsecaseImpl(
 func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*models.ProjectUser, *errs.AppError) {
 	projectUser, err := u.projectRepository.FindProjectUser(in)
 
-	u.abac.CheckAccess(&project_dto.ProjectUserDto{
-		ID:        projectUser.ID,
-		UserID:    projectUser.UserID,
-		RoleID:    projectUser.RoleID,
-		ProjectID: projectUser.ProjectID,
-	}, models.ActionRead, models.ResourceProject)
-
 	if err != nil {
 		return nil, errs.BadRequest.WithError(err)
+	}
+
+	projectUserDto := &project_dto.ProjectUserDto{
+		RoleID:    projectUser.RoleID,
+		ProjectID: projectUser.ProjectID,
+	}
+
+	access := u.abac.CheckAccess(
+		projectUserDto,
+		models.ActionRead,
+		models.ResourceProject,
+	)
+
+	if !access {
+		return nil, errs.Forbidden.WithMessage("access denided")
 	}
 
 	return projectUser, nil
