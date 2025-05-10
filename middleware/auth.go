@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/ddan1l/tega-backend/ctx"
 	auth_dto "github.com/ddan1l/tega-backend/dto/auth"
+	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	auth_usecase "github.com/ddan1l/tega-backend/usecases/auth"
 	"github.com/ddan1l/tega-backend/utils"
 	res "github.com/ddan1l/tega-backend/web/responses"
@@ -43,7 +43,7 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 			m.setAccessTokenCookie(c, r.AccessToken)
 		}
 
-		c.Set("User", ctx.UserContext{
+		c.Set("User", user_dto.UserrDto{
 			ID:       r.User.ID,
 			Email:    r.User.Email,
 			FullName: r.User.FullName,

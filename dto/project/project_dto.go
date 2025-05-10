@@ -1,17 +1,17 @@
 package project_dto
 
-import "github.com/ddan1l/tega-backend/ctx"
-
 type (
 	ProjectUserDto struct {
-		UserID    int
-		RoleID    int
-		ProjectID int
+		ID        int `json:"id" example:"1"`
+		UserID    int `json:"user_id" example:"1"`
+		RoleID    int `json:"role_id" example:"1"`
+		ProjectID int `json:"project_id" example:"1"`
+		Project   *ProjectDto
 	}
 
 	CreateProjectDto struct {
 		Project *ProjectDto
-		User    *ctx.UserContext
+		UserID  int
 	}
 
 	FindBySlugDto struct {

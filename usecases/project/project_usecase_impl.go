@@ -29,27 +29,21 @@ func NewProjectUsecaseImpl(
 	}
 }
 
-func (u *projectUsecaseImpl) CheckIsUserInProject(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectDto, *errs.AppError) {
-	projects, err := u.projectRepository.FindProjectsByUserId(&project_dto.FindByUserIdDto{
-		UserID: in.UserID,
-	})
+func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*models.ProjectUser, *errs.AppError) {
+	projectUser, err := u.projectRepository.FindProjectUser(in)
+
+	u.abac.CheckAccess(&project_dto.ProjectUserDto{
+		ID:        projectUser.ID,
+		UserID:    projectUser.UserID,
+		RoleID:    projectUser.RoleID,
+		ProjectID: projectUser.ProjectID,
+	}, models.ActionRead, models.ResourceProject)
 
 	if err != nil {
 		return nil, errs.BadRequest.WithError(err)
 	}
 
-	for _, project := range *projects {
-		if project.Slug == in.Slug {
-			return &project_dto.ProjectDto{
-				ID:          project.ID,
-				Name:        project.Name,
-				Slug:        project.Slug,
-				Description: project.Description,
-			}, nil
-		}
-	}
-
-	return nil, errs.NotFound.WithMessage("Project not found.")
+	return projectUser, nil
 }
 
 func (u *projectUsecaseImpl) GetUserProjects(in *project_dto.FindByUserIdDto) (*project_dto.ProjectsDto, *errs.AppError) {
@@ -118,7 +112,7 @@ func (u *projectUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*p
 		}
 
 		projectUser := &project_dto.ProjectUserDto{
-			UserID:    in.User.ID,
+			UserID:    in.UserID,
 			RoleID:    admin.Role.ID,
 			ProjectID: project.ID,
 		}

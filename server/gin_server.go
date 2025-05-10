@@ -105,5 +105,7 @@ func (s *ginServer) initializeProjectHandler() {
 	g.GET("/projects", projectHandler.UserProjects)
 
 	g.POST("/project", projectHandler.CreateProject)
+	g.GET("/project", projectHandler.UserProject)
+
 	g.GET("/project/policies", projectHandler.ProjectsPolicies)
 }

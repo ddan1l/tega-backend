@@ -32,7 +32,7 @@ func (m *subdomainMiddleware) Middleware() gin.HandlerFunc {
 				return
 			}
 
-			project, projectErr := m.userUseCase.CheckIsUserInProject(&project_dto.FindBySlugAndUserIdDto{
+			projectUser, projectErr := m.userUseCase.GetProjectUser(&project_dto.FindBySlugAndUserIdDto{
 				UserID: user.ID,
 				Slug:   subdomain,
 			})
@@ -43,11 +43,15 @@ func (m *subdomainMiddleware) Middleware() gin.HandlerFunc {
 				return
 			}
 
-			c.Set("Project", ctx.ProjectContext{
-				ID:          project.ID,
-				Name:        project.Name,
-				Slug:        project.Slug,
-				Description: project.Description,
+			c.Set("ProjectUser", project_dto.ProjectUserDto{
+				ID:        projectUser.ID,
+				UserID:    projectUser.UserID,
+				RoleID:    projectUser.RoleID,
+				ProjectID: projectUser.ProjectID,
+				Project: &project_dto.ProjectDto{
+					ID:   projectUser.Project.ID,
+					Slug: projectUser.Project.Slug,
+				},
 			})
 		}
 

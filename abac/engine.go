@@ -1,8 +1,11 @@
 package abac
 
 import (
+	"log"
+
 	"github.com/ddan1l/tega-backend/database"
 	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	"github.com/ddan1l/tega-backend/models"
 )
 
@@ -112,6 +115,10 @@ func (e *engine) LoadProjectPolicies(in *abac_dto.LoadProjectPoliciesDto) (*abac
 	return &abac_dto.PoliciesDto{
 		Policies: &policies,
 	}, nil
+}
+
+func (e *engine) CheckAccess(user *project_dto.ProjectUserDto, action models.ActionType, resource models.ResourceType) {
+	log.Println(user, action, resource)
 }
 
 //

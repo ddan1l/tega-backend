@@ -78,7 +78,7 @@ func (h *userHandler) CreateProject(c *gin.Context) {
 				Slug:        r.Slug,
 				Description: r.Description,
 			},
-			User: user,
+			UserID: user.ID,
 		}
 
 		dto, err := h.projectUsecase.CreateProject(createProjectDto)
@@ -97,11 +97,11 @@ func (h *userHandler) CreateProject(c *gin.Context) {
 }
 
 func (h *userHandler) ProjectsPolicies(c *gin.Context) {
-	if project, err := ctx.GetProjectFromContext(c); err != nil {
+	if projectUser, err := ctx.GetProjectUserFromContext(c); err != nil {
 		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
 	} else {
 		dto, err := h.projectUsecase.GetProjectPolicies(&project_dto.FindByIdDto{
-			ID: project.ID,
+			ID: projectUser.ProjectID,
 		})
 
 		if err != nil {
@@ -110,7 +110,26 @@ func (h *userHandler) ProjectsPolicies(c *gin.Context) {
 		}
 
 		r := &res.ProjectPoliciesResponse{
-			Policies: *dto,
+			Policies: dto.Policies,
+		}
+
+		res.SuccessWithData(c, r)
+	}
+}
+
+func (h *userHandler) UserProject(c *gin.Context) {
+	if user, err := ctx.GetProjectUserFromContext(c); err != nil {
+		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
+	} else {
+		dto, err := h.projectUsecase.GetUserProjects(&project_dto.FindByUserIdDto{UserID: user.ID})
+
+		if err != nil {
+			res.Error(c, errs.BadRequest.WithMessage(err.Error()))
+			return
+		}
+
+		r := &res.ProjectsResponse{
+			Projects: dto.Projects,
 		}
 
 		res.SuccessWithData(c, r)

@@ -2,6 +2,7 @@ package user_handler
 
 import (
 	"github.com/ddan1l/tega-backend/ctx"
+	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	project_usecase "github.com/ddan1l/tega-backend/usecases/project"
 	res "github.com/ddan1l/tega-backend/web/responses"
@@ -29,7 +30,7 @@ func NewUserHandler(projectUsecase project_usecase.ProjectUsecase) UserHandler {
 // @Router /user [get]
 func (h *userHandler) User(c *gin.Context) {
 	var (
-		user *ctx.UserContext
+		user *user_dto.UserrDto
 		err  error
 	)
 

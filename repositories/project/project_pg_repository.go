@@ -21,10 +21,28 @@ func (r *projectPgRepository) WithTx(db database.Database) ProjectRepository {
 	return &projectPgRepository{db: db}
 }
 
+func (r *projectPgRepository) FindProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*models.ProjectUser, error) {
+	var projectUsers []models.ProjectUser
+
+	result := r.db.GetDb().Preload("Project").Preload("Role").Where("user_id = ?", in.UserID).Find(&projectUsers)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	for _, pu := range projectUsers {
+		if pu.Project.Slug == in.Slug {
+			return &pu, nil
+		}
+	}
+
+	return nil, errors.New("not fouund")
+}
+
 func (r *projectPgRepository) FindProjectsByUserId(in *project_dto.FindByUserIdDto) (*[]models.Project, error) {
 	var projectUsers []models.ProjectUser
 
-	result := r.db.GetDb().Preload("Project").Where("user_id = ?", in.UserID).Find(&projectUsers)
+	result := r.db.GetDb().Preload("Project").Preload("Role").Where("user_id = ?", in.UserID).Find(&projectUsers)
 
 	if result.Error != nil {
 		return nil, result.Error

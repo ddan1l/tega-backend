@@ -1,8 +1,8 @@
 package res
 
 import (
-	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
+	"github.com/ddan1l/tega-backend/models"
 )
 
 type ProjectsResponse struct {
@@ -14,5 +14,5 @@ type ProjectResponse struct {
 }
 
 type ProjectPoliciesResponse struct {
-	Policies abac_dto.PoliciesDto `json:"policies"`
+	Policies *[]models.Policy `json:"policies"`
 }
