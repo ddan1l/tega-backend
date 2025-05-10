@@ -6,6 +6,4 @@ import (
 
 type UserHandler interface {
 	User(c *gin.Context)
-	UserProjects(c *gin.Context)
-	CreateProject(c *gin.Context)
 }

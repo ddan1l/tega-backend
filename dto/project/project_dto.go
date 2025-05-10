@@ -18,8 +18,16 @@ type (
 		Slug string
 	}
 
+	FindByIdDto struct {
+		ID int
+	}
+
 	FindBySlugAndUserIdDto struct {
 		Slug   string
+		UserID int
+	}
+
+	FindByUserIdDto struct {
 		UserID int
 	}
 

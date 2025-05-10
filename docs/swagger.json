@@ -310,7 +310,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/res.UserProjectResponse"
+                                            "$ref": "#/definitions/res.ProjectResponse"
                                         }
                                     }
                                 }
@@ -399,7 +399,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/res.UserProjectsResponse"
+                                            "$ref": "#/definitions/res.ProjectsResponse"
                                         }
                                     }
                                 }
@@ -692,7 +692,7 @@
                 }
             }
         },
-        "res.UserProjectResponse": {
+        "res.ProjectResponse": {
             "type": "object",
             "properties": {
                 "project": {
@@ -700,7 +700,7 @@
                 }
             }
         },
-        "res.UserProjectsResponse": {
+        "res.ProjectsResponse": {
             "type": "object",
             "properties": {
                 "projects": {

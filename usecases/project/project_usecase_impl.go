@@ -1,42 +1,37 @@
-package user_usercase
+package project_usecase
 
 import (
 	"github.com/ddan1l/tega-backend/abac"
 	"github.com/ddan1l/tega-backend/database"
 	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
-	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	"github.com/ddan1l/tega-backend/models"
 	project_repository "github.com/ddan1l/tega-backend/repositories/project"
-	user_repository "github.com/ddan1l/tega-backend/repositories/user"
 	"github.com/ddan1l/tega-backend/transaction"
 )
 
-type userUsecaseImpl struct {
+type projectUsecaseImpl struct {
 	projectRepository project_repository.ProjectRepository
-	userRepository    user_repository.UserRepository
 	abac              abac.Engine
 	txManager         transaction.TxManager
 }
 
-func NewUserUsecaseImpl(
-	userRepository user_repository.UserRepository,
+func NewProjectUsecaseImpl(
 	projectRepository project_repository.ProjectRepository,
 	abac abac.Engine,
 	txManager transaction.TxManager,
-) UserUsecase {
-	return &userUsecaseImpl{
-		userRepository:    userRepository,
+) ProjectUsecase {
+	return &projectUsecaseImpl{
 		projectRepository: projectRepository,
 		abac:              abac,
 		txManager:         txManager,
 	}
 }
 
-func (u *userUsecaseImpl) CheckIsUserInProject(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectDto, *errs.AppError) {
-	projects, err := u.projectRepository.FindProjectsByUserId(&user_dto.FindByIdDto{
-		ID: in.UserID,
+func (u *projectUsecaseImpl) CheckIsUserInProject(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectDto, *errs.AppError) {
+	projects, err := u.projectRepository.FindProjectsByUserId(&project_dto.FindByUserIdDto{
+		UserID: in.UserID,
 	})
 
 	if err != nil {
@@ -57,7 +52,7 @@ func (u *userUsecaseImpl) CheckIsUserInProject(in *project_dto.FindBySlugAndUser
 	return nil, errs.NotFound.WithMessage("Project not found.")
 }
 
-func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*project_dto.ProjectsDto, *errs.AppError) {
+func (u *projectUsecaseImpl) GetUserProjects(in *project_dto.FindByUserIdDto) (*project_dto.ProjectsDto, *errs.AppError) {
 	projects, err := u.projectRepository.FindProjectsByUserId(in)
 
 	if err != nil {
@@ -80,7 +75,7 @@ func (u *userUsecaseImpl) GetUserProjects(in *user_dto.FindByIdDto) (*project_dt
 	}, nil
 }
 
-func (u *userUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*project_dto.ProjectDto, *errs.AppError) {
+func (u *projectUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*project_dto.ProjectDto, *errs.AppError) {
 	// Check is project exists
 	if project, err := u.projectRepository.FindProjectsBySlug(&project_dto.FindBySlugDto{
 		Slug: in.Project.Slug,
@@ -144,4 +139,16 @@ func (u *userUsecaseImpl) CreateProject(in *project_dto.CreateProjectDto) (*proj
 	})
 
 	return result, txErr
+}
+
+func (u *projectUsecaseImpl) GetProjectPolicies(in *project_dto.FindByIdDto) (*abac_dto.PoliciesDto, *errs.AppError) {
+	res, err := u.abac.LoadProjectPolicies(&abac_dto.LoadProjectPoliciesDto{
+		ProjectID: in.ID,
+	})
+
+	if err != nil {
+		return nil, errs.BadRequest.WithError(err)
+	}
+
+	return res, nil
 }

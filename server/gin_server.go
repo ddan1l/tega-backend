@@ -10,6 +10,7 @@ import (
 	_ "github.com/ddan1l/tega-backend/docs"
 	"github.com/ddan1l/tega-backend/factory"
 	auth_handler "github.com/ddan1l/tega-backend/handlers/auth"
+	project_handler "github.com/ddan1l/tega-backend/handlers/project"
 	user_handler "github.com/ddan1l/tega-backend/handlers/user"
 	"github.com/ddan1l/tega-backend/middleware"
 	"github.com/gin-gonic/gin"
@@ -68,6 +69,7 @@ func (s *ginServer) initializeHandlers() {
 	s.app.Use(subdomainMiddleware.Middleware())
 
 	s.initializeUserHandler()
+	s.initializeProjectHandler()
 }
 
 func (s *ginServer) initializeAuthHandler() {
@@ -91,7 +93,17 @@ func (s *ginServer) initializeUserHandler() {
 	g := s.app.Group("/api/user")
 
 	g.GET("", userHandler.User)
-	g.GET("/projects", userHandler.UserProjects)
+}
 
-	g.POST("/project", userHandler.CreateProject)
+func (s *ginServer) initializeProjectHandler() {
+	projectHandler := project_handler.NewProjectHandler(
+		s.factory.CreateUserhUseCase(),
+	)
+
+	g := s.app.Group("/api")
+
+	g.GET("/projects", projectHandler.UserProjects)
+
+	g.POST("/project", projectHandler.CreateProject)
+	g.GET("/project/policies", projectHandler.ProjectsPolicies)
 }

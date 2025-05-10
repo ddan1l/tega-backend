@@ -2,12 +2,12 @@ package factory
 
 import (
 	auth_usecase "github.com/ddan1l/tega-backend/usecases/auth"
-	user_usercase "github.com/ddan1l/tega-backend/usecases/user"
+	project_usecase "github.com/ddan1l/tega-backend/usecases/project"
 )
 
 type UseCaseFactory interface {
 	CreateAuthUseCase() auth_usecase.AuthUsecase
-	CreateUserUseCase() user_usercase.UserUsecase
+	CreateUserUseCase() project_usecase.ProjectUsecase
 }
 
 func (f *DefaultFactory) CreateAuthUseCase() auth_usecase.AuthUsecase {
@@ -17,9 +17,8 @@ func (f *DefaultFactory) CreateAuthUseCase() auth_usecase.AuthUsecase {
 	)
 }
 
-func (f *DefaultFactory) CreateUserhUseCase() user_usercase.UserUsecase {
-	return user_usercase.NewUserUsecaseImpl(
-		f.CreateUserRepository(),
+func (f *DefaultFactory) CreateUserhUseCase() project_usecase.ProjectUsecase {
+	return project_usecase.NewProjectUsecaseImpl(
 		f.CreateProjectRepository(),
 		f.CreateABAC(),
 		f.CreateTxManager(),

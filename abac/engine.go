@@ -4,7 +4,6 @@ import (
 	"github.com/ddan1l/tega-backend/database"
 	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	"github.com/ddan1l/tega-backend/models"
-	"gorm.io/gorm"
 )
 
 type engine struct {
@@ -33,7 +32,6 @@ func (e *engine) CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*
 
 	adminRole, developerRole, viewerRole := roles[0], roles[1], roles[2]
 
-	// Создаем политики с использованием ENUM типов
 	policies := []models.Policy{
 		{
 			Slug:      "admin-full-access",
@@ -90,19 +88,29 @@ func (e *engine) CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*
 		},
 	}
 
-	err := e.db.GetDb().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&policies).Error; err != nil {
-			return err
-		}
-		return nil
-	})
-
-	if err != nil {
+	if err := e.db.GetDb().Create(&policies).Error; err != nil {
 		return nil, err
 	}
 
 	return &abac_dto.RoleDto{
 		Role: &adminRole,
+	}, nil
+}
+
+func (e *engine) LoadProjectPolicies(in *abac_dto.LoadProjectPoliciesDto) (*abac_dto.PoliciesDto, error) {
+	var policies []models.Policy
+
+	e.db.GetDb().
+		Preload("Role").
+		Preload("Project").
+		Preload("Actions").
+		Preload("Resources").
+		Preload("Conditions").
+		Where("project_id = ?", in.ProjectID).
+		Find(&policies)
+
+	return &abac_dto.PoliciesDto{
+		Policies: &policies,
 	}, nil
 }
 

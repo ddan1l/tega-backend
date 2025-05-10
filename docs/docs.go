@@ -322,7 +322,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/res.UserProjectResponse"
+                                            "$ref": "#/definitions/res.ProjectResponse"
                                         }
                                     }
                                 }
@@ -411,7 +411,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/res.UserProjectsResponse"
+                                            "$ref": "#/definitions/res.ProjectsResponse"
                                         }
                                     }
                                 }
@@ -704,7 +704,7 @@ const docTemplate = `{
                 }
             }
         },
-        "res.UserProjectResponse": {
+        "res.ProjectResponse": {
             "type": "object",
             "properties": {
                 "project": {
@@ -712,7 +712,7 @@ const docTemplate = `{
                 }
             }
         },
-        "res.UserProjectsResponse": {
+        "res.ProjectsResponse": {
             "type": "object",
             "properties": {
                 "projects": {

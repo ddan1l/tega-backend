@@ -171,12 +171,12 @@ definitions:
         example: true
         type: boolean
     type: object
-  res.UserProjectResponse:
+  res.ProjectResponse:
     properties:
       project:
         $ref: '#/definitions/project_dto.ProjectDto'
     type: object
-  res.UserProjectsResponse:
+  res.ProjectsResponse:
     properties:
       projects:
         items:
@@ -371,7 +371,7 @@ paths:
             - $ref: '#/definitions/res.SuccessWithDataResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/res.UserProjectResponse'
+                  $ref: '#/definitions/res.ProjectResponse'
               type: object
         "400":
           description: Bad Request
@@ -418,7 +418,7 @@ paths:
             - $ref: '#/definitions/res.SuccessWithDataResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/res.UserProjectsResponse'
+                  $ref: '#/definitions/res.ProjectsResponse'
               type: object
         "400":
           description: Bad Request

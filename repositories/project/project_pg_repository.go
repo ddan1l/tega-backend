@@ -5,7 +5,6 @@ import (
 
 	"github.com/ddan1l/tega-backend/database"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
-	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	"github.com/ddan1l/tega-backend/models"
 	"gorm.io/gorm"
 )
@@ -22,10 +21,10 @@ func (r *projectPgRepository) WithTx(db database.Database) ProjectRepository {
 	return &projectPgRepository{db: db}
 }
 
-func (r *projectPgRepository) FindProjectsByUserId(in *user_dto.FindByIdDto) (*[]models.Project, error) {
+func (r *projectPgRepository) FindProjectsByUserId(in *project_dto.FindByUserIdDto) (*[]models.Project, error) {
 	var projectUsers []models.ProjectUser
 
-	result := r.db.GetDb().Preload("Project").Where("user_id = ?", in.ID).Find(&projectUsers)
+	result := r.db.GetDb().Preload("Project").Where("user_id = ?", in.UserID).Find(&projectUsers)
 
 	if result.Error != nil {
 		return nil, result.Error

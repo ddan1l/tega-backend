@@ -7,5 +7,6 @@ import (
 
 type Engine interface {
 	CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*abac_dto.RoleDto, error)
+	LoadProjectPolicies(in *abac_dto.LoadProjectPoliciesDto) (*abac_dto.PoliciesDto, error)
 	WithTx(db database.Database) Engine
 }

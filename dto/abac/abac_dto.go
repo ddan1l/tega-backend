@@ -7,6 +7,14 @@ type (
 		ProjectID int
 	}
 
+	LoadProjectPoliciesDto struct {
+		ProjectID int
+	}
+
+	PoliciesDto struct {
+		Policies *[]models.Policy
+	}
+
 	RoleDto struct {
 		Role *models.Role
 	}

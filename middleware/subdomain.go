@@ -4,16 +4,16 @@ import (
 	"github.com/ddan1l/tega-backend/ctx"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	errs "github.com/ddan1l/tega-backend/errors"
-	user_usercase "github.com/ddan1l/tega-backend/usecases/user"
+	project_usecase "github.com/ddan1l/tega-backend/usecases/project"
 	res "github.com/ddan1l/tega-backend/web/responses"
 	"github.com/gin-gonic/gin"
 )
 
 type subdomainMiddleware struct {
-	userUseCase user_usercase.UserUsecase
+	userUseCase project_usecase.ProjectUsecase
 }
 
-func NewSubdomainMiddleware(userUseCase user_usercase.UserUsecase) Middleware {
+func NewSubdomainMiddleware(userUseCase project_usecase.ProjectUsecase) Middleware {
 	return &subdomainMiddleware{
 		userUseCase: userUseCase,
 	}
