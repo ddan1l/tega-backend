@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	"gorm.io/gorm"
 )
 
@@ -24,4 +25,15 @@ type ProjectUser struct {
 	CreatedAt time.Time `gorm:"default:current_timestamp"`
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime
+}
+
+func (pu *ProjectUser) ToDto() *project_dto.ProjectUserDto {
+	return &project_dto.ProjectUserDto{
+		ID:        pu.ID,
+		UserID:    pu.UserID,
+		RoleID:    pu.RoleID,
+		ProjectID: pu.ProjectID,
+		User:      pu.User.ToDto(),
+		Project:   pu.Project.ToDto(),
+	}
 }
