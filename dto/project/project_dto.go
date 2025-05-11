@@ -1,5 +1,7 @@
 package project_dto
 
+import user_dto "github.com/ddan1l/tega-backend/dto/user"
+
 type (
 	ProjectUserDto struct {
 		ID        int `json:"id" example:"1"`
@@ -7,6 +9,7 @@ type (
 		RoleID    int `json:"role_id" example:"1"`
 		ProjectID int `json:"project_id" example:"1"`
 		Project   *ProjectDto
+		User      *user_dto.UserDto
 	}
 
 	CreateProjectDto struct {

@@ -43,7 +43,7 @@ func (m *authMiddleware) Middleware() gin.HandlerFunc {
 			m.setAccessTokenCookie(c, r.AccessToken)
 		}
 
-		c.Set("User", user_dto.UserrDto{
+		c.Set("User", user_dto.UserDto{
 			ID:       r.User.ID,
 			Email:    r.User.Email,
 			FullName: r.User.FullName,

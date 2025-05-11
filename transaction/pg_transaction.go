@@ -48,8 +48,8 @@ func (m *txManager) CallWithTx(fn func(tx database.Database) *errs.AppError) *er
 	tx := database.NewTransaction(m.db)
 
 	defer func() {
-		log.Println("\n\n====== ROLLBACK TRANSACTION ======")
 		if r := recover(); r != nil {
+			log.Println("\n\n====== ROLLBACK TRANSACTION ======")
 			tx.GetDb().Rollback()
 			panic(r)
 		}

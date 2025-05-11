@@ -30,7 +30,7 @@ func NewUserHandler(projectUsecase project_usecase.ProjectUsecase) UserHandler {
 // @Router /user [get]
 func (h *userHandler) User(c *gin.Context) {
 	var (
-		user *user_dto.UserrDto
+		user *user_dto.UserDto
 		err  error
 	)
 

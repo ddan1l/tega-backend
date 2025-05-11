@@ -5,7 +5,7 @@ definitions:
         example: ALREADY_EXISTS
         type: string
       message:
-        example: User already exists.
+        example: Already exists.
         type: string
       status:
         example: 409
@@ -108,6 +108,25 @@ definitions:
         example: test
         type: string
     type: object
+  project_dto.ProjectUserDto:
+    properties:
+      id:
+        example: 1
+        type: integer
+      project:
+        $ref: '#/definitions/project_dto.ProjectDto'
+      project_id:
+        example: 1
+        type: integer
+      role_id:
+        example: 1
+        type: integer
+      user:
+        $ref: '#/definitions/user_dto.UserDto'
+      user_id:
+        example: 1
+        type: integer
+    type: object
   req.CreateProjectRequest:
     properties:
       description:
@@ -158,6 +177,30 @@ definitions:
         example: false
         type: boolean
     type: object
+  res.ProjectResponse:
+    properties:
+      project:
+        $ref: '#/definitions/project_dto.ProjectDto'
+    type: object
+  res.ProjectUserResponse:
+    properties:
+      projectUser:
+        $ref: '#/definitions/project_dto.ProjectUserDto'
+    type: object
+  res.ProjectUsersResponse:
+    properties:
+      projectUsers:
+        items:
+          $ref: '#/definitions/project_dto.ProjectUserDto'
+        type: array
+    type: object
+  res.ProjectsResponse:
+    properties:
+      projects:
+        items:
+          $ref: '#/definitions/project_dto.ProjectDto'
+        type: array
+    type: object
   res.SuccessResponse:
     properties:
       success:
@@ -171,19 +214,19 @@ definitions:
         example: true
         type: boolean
     type: object
-  res.ProjectResponse:
-    properties:
-      project:
-        $ref: '#/definitions/project_dto.ProjectDto'
-    type: object
-  res.ProjectsResponse:
-    properties:
-      projects:
-        items:
-          $ref: '#/definitions/project_dto.ProjectDto'
-        type: array
-    type: object
   res.UserResponse:
+    properties:
+      email:
+        example: john@john.com
+        type: string
+      fullName:
+        example: John
+        type: string
+      id:
+        example: 1
+        type: integer
+    type: object
+  user_dto.UserDto:
     properties:
       email:
         example: john@john.com
@@ -320,36 +363,7 @@ paths:
       summary: User register
       tags:
       - auth
-  /user:
-    get:
-      consumes:
-      - application/json
-      description: AuthenticatedUser
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/res.SuccessWithDataResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/res.UserResponse'
-              type: object
-        "403":
-          description: Forbidden
-          schema:
-            allOf:
-            - $ref: '#/definitions/res.ErrorResponse'
-            - properties:
-                error:
-                  $ref: '#/definitions/errs.ForbiddenError'
-              type: object
-      summary: User
-      tags:
-      - user
-  /user/project:
+  /project:
     post:
       consumes:
       - application/json
@@ -402,8 +416,84 @@ paths:
               type: object
       summary: Create Project
       tags:
-      - user
-  /user/projects:
+      - project
+  /project/user:
+    get:
+      consumes:
+      - application/json
+      description: Project user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.SuccessWithDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ProjectUserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.BadRequestError'
+              type: object
+        "403":
+          description: Forbidden
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ForbiddenError'
+              type: object
+      summary: Project user
+      tags:
+      - project
+  /project/users:
+    get:
+      consumes:
+      - application/json
+      description: Project users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.SuccessWithDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ProjectUsersResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.BadRequestError'
+              type: object
+        "403":
+          description: Forbidden
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ForbiddenError'
+              type: object
+      summary: Project users
+      tags:
+      - project
+  /projects:
     get:
       consumes:
       - application/json
@@ -439,6 +529,35 @@ paths:
                   $ref: '#/definitions/errs.ForbiddenError'
               type: object
       summary: Projects
+      tags:
+      - project
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: AuthenticatedUser
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.SuccessWithDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.UserResponse'
+              type: object
+        "403":
+          description: Forbidden
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ForbiddenError'
+              type: object
+      summary: User
       tags:
       - user
 swagger: "2.0"

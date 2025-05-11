@@ -64,14 +64,15 @@ func (e *engine) CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*
 			},
 		},
 		{
-			Slug:      "developer-view-project",
+			Slug:      "developer-read",
 			RoleID:    developerRole.ID,
 			ProjectID: in.ProjectID,
 			Actions: []models.PolicyAction{
 				{Action: models.ActionRead},
 			},
 			Resources: []models.PolicyResource{
-				{Resource: models.ResourceTask},
+				{Resource: models.ResourceProject},
+				{Resource: models.ResourceUser},
 			},
 		},
 		{
@@ -84,6 +85,7 @@ func (e *engine) CreateDefaultPolicies(in *abac_dto.CreateDefaultPoliciesDto) (*
 			Resources: []models.PolicyResource{
 				{Resource: models.ResourceProject},
 				{Resource: models.ResourceTask},
+				{Resource: models.ResourceUser},
 			},
 		},
 	}

@@ -23,13 +23,13 @@ func NewProjectHandler(projectUsecase project_usecase.ProjectUsecase) UserHandle
 // Logout godoc
 // @Summary Projects
 // @Description UserProjects
-// @Tags user
+// @Tags project
 // @Accept json
 // @Produce json
 // @Success 200 {object} res.SuccessWithDataResponse{data=res.ProjectsResponse}
 // @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
 // @Response 400 {object} res.ErrorResponse{error=errs.BadRequestError}
-// @Router /user/projects [get]
+// @Router /projects [get]
 func (h *userHandler) UserProjects(c *gin.Context) {
 	if user, err := ctx.GetUserFromContext(c); err != nil {
 		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
@@ -52,7 +52,7 @@ func (h *userHandler) UserProjects(c *gin.Context) {
 // Logout godoc
 // @Summary Create Project
 // @Description Create Project
-// @Tags user
+// @Tags project
 // @Accept json
 // @Produce json
 // @Param request body req.CreateProjectRequest true "Create project request"
@@ -60,7 +60,7 @@ func (h *userHandler) UserProjects(c *gin.Context) {
 // @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
 // @Response 400 {object} res.ErrorResponse{error=errs.BadRequestError}
 // @Response 422 {object} res.ErrorResponse{error=errs.ValidationFailedError}
-// @Router /user/project [post]
+// @Router /project [post]
 func (h *userHandler) CreateProject(c *gin.Context) {
 	var r req.CreateProjectRequest
 
@@ -117,19 +117,52 @@ func (h *userHandler) ProjectsPolicies(c *gin.Context) {
 	}
 }
 
-func (h *userHandler) UserProject(c *gin.Context) {
+// Logout godoc
+// @Summary Project user
+// @Description Project user
+// @Tags project
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.SuccessWithDataResponse{data=res.ProjectUserResponse}
+// @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
+// @Response 400 {object} res.ErrorResponse{error=errs.BadRequestError}
+// @Router /project/user [get]
+func (h *userHandler) ProjectUser(c *gin.Context) {
 	if user, err := ctx.GetProjectUserFromContext(c); err != nil {
 		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
 	} else {
-		dto, err := h.projectUsecase.GetUserProjects(&project_dto.FindByUserIdDto{UserID: user.ID})
+
+		r := &res.ProjectUserResponse{
+			User: *user,
+		}
+
+		res.SuccessWithData(c, r)
+	}
+}
+
+// Logout godoc
+// @Summary Project users
+// @Description Project users
+// @Tags project
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.SuccessWithDataResponse{data=res.ProjectUsersResponse}
+// @Response 403 {object} res.ErrorResponse{error=errs.ForbiddenError}
+// @Response 400 {object} res.ErrorResponse{error=errs.BadRequestError}
+// @Router /project/users [get]
+func (h *userHandler) ProjectUsers(c *gin.Context) {
+	if user, err := ctx.GetProjectUserFromContext(c); err != nil {
+		res.Error(c, errs.Forbidden.WithMessage(err.Error()))
+	} else {
+		dto, err := h.projectUsecase.GetProjectUsers(user)
 
 		if err != nil {
-			res.Error(c, errs.BadRequest.WithMessage(err.Error()))
+			res.Error(c, err)
 			return
 		}
 
-		r := &res.ProjectsResponse{
-			Projects: dto.Projects,
+		r := &res.ProjectUsersResponse{
+			Users: *dto,
 		}
 
 		res.SuccessWithData(c, r)

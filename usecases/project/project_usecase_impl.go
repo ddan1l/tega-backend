@@ -5,6 +5,7 @@ import (
 	"github.com/ddan1l/tega-backend/database"
 	abac_dto "github.com/ddan1l/tega-backend/dto/abac"
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
+	user_dto "github.com/ddan1l/tega-backend/dto/user"
 	errs "github.com/ddan1l/tega-backend/errors"
 	"github.com/ddan1l/tega-backend/models"
 	project_repository "github.com/ddan1l/tega-backend/repositories/project"
@@ -29,7 +30,7 @@ func NewProjectUsecaseImpl(
 	}
 }
 
-func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*models.ProjectUser, *errs.AppError) {
+func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*project_dto.ProjectUserDto, *errs.AppError) {
 	projectUser, err := u.projectRepository.FindProjectUser(in)
 
 	if err != nil {
@@ -51,7 +52,69 @@ func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdD
 		return nil, errs.Forbidden.WithMessage("access denided")
 	}
 
-	return projectUser, nil
+	return &project_dto.ProjectUserDto{
+		ID:        projectUser.ID,
+		UserID:    projectUser.UserID,
+		RoleID:    projectUser.RoleID,
+		ProjectID: projectUser.ProjectID,
+		User: &user_dto.UserDto{
+			ID:       projectUser.User.ID,
+			FullName: projectUser.User.FullName,
+			Email:    projectUser.User.Email,
+		},
+		Project: &project_dto.ProjectDto{
+			ID:          projectUser.Project.ID,
+			Slug:        projectUser.Project.Slug,
+			Name:        projectUser.Project.Name,
+			Description: projectUser.Project.Description,
+		},
+	}, nil
+}
+
+func (u *projectUsecaseImpl) GetProjectUsers(in *project_dto.ProjectUserDto) (*[]project_dto.ProjectUserDto, *errs.AppError) {
+	projectUsers, err := u.projectRepository.FindProjectUsers(&project_dto.FindByIdDto{
+		ID: in.ProjectID,
+	})
+
+	if err != nil {
+		return nil, errs.BadRequest.WithError(err)
+	}
+
+	access := u.abac.CheckAccess(
+		in,
+		models.ActionRead,
+		models.ResourceUser,
+	)
+
+	if !access {
+		return nil, errs.Forbidden.WithMessage("access denided")
+	}
+
+	users := make([]project_dto.ProjectUserDto, 0, len(*projectUsers))
+
+	for _, projectUser := range *projectUsers {
+		pu := project_dto.ProjectUserDto{
+			ID:        projectUser.ID,
+			UserID:    projectUser.UserID,
+			RoleID:    projectUser.RoleID,
+			ProjectID: projectUser.ProjectID,
+			User: &user_dto.UserDto{
+				ID:       projectUser.User.ID,
+				FullName: projectUser.User.FullName,
+				Email:    projectUser.User.Email,
+			},
+			Project: &project_dto.ProjectDto{
+				ID:          projectUser.Project.ID,
+				Slug:        projectUser.Project.Slug,
+				Name:        projectUser.Project.Name,
+				Description: projectUser.Project.Description,
+			},
+		}
+
+		users = append(users, pu)
+	}
+
+	return &users, nil
 }
 
 func (u *projectUsecaseImpl) GetUserProjects(in *project_dto.FindByUserIdDto) (*project_dto.ProjectsDto, *errs.AppError) {

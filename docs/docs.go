@@ -233,60 +233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
-            "get": {
-                "description": "AuthenticatedUser",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "User",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/res.SuccessWithDataResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/res.UserResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/res.ErrorResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "$ref": "#/definitions/errs.ForbiddenError"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/user/project": {
+        "/project": {
             "post": {
                 "description": "Create Project",
                 "consumes": [
@@ -296,7 +243,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "project"
                 ],
                 "summary": "Create Project",
                 "parameters": [
@@ -386,7 +333,149 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/projects": {
+        "/project/user": {
+            "get": {
+                "description": "Project user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "project"
+                ],
+                "summary": "Project user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.SuccessWithDataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.ProjectUserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.BadRequestError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.ForbiddenError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/project/users": {
+            "get": {
+                "description": "Project users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "project"
+                ],
+                "summary": "Project users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.SuccessWithDataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.ProjectUsersResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.BadRequestError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.ForbiddenError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
             "get": {
                 "description": "UserProjects",
                 "consumes": [
@@ -396,7 +485,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "project"
                 ],
                 "summary": "Projects",
                 "responses": {
@@ -456,6 +545,59 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user": {
+            "get": {
+                "description": "AuthenticatedUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "User",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.SuccessWithDataResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/res.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/res.ErrorResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/errs.ForbiddenError"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -468,7 +610,7 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string",
-                    "example": "User already exists."
+                    "example": "Already exists."
                 },
                 "status": {
                     "type": "integer",
@@ -614,6 +756,33 @@ const docTemplate = `{
                 }
             }
         },
+        "project_dto.ProjectUserDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "project": {
+                    "$ref": "#/definitions/project_dto.ProjectDto"
+                },
+                "project_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "role_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user": {
+                    "$ref": "#/definitions/user_dto.UserDto"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
         "req.CreateProjectRequest": {
             "type": "object",
             "required": [
@@ -685,6 +854,44 @@ const docTemplate = `{
                 }
             }
         },
+        "res.ProjectResponse": {
+            "type": "object",
+            "properties": {
+                "project": {
+                    "$ref": "#/definitions/project_dto.ProjectDto"
+                }
+            }
+        },
+        "res.ProjectUserResponse": {
+            "type": "object",
+            "properties": {
+                "projectUser": {
+                    "$ref": "#/definitions/project_dto.ProjectUserDto"
+                }
+            }
+        },
+        "res.ProjectUsersResponse": {
+            "type": "object",
+            "properties": {
+                "projectUsers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/project_dto.ProjectUserDto"
+                    }
+                }
+            }
+        },
+        "res.ProjectsResponse": {
+            "type": "object",
+            "properties": {
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/project_dto.ProjectDto"
+                    }
+                }
+            }
+        },
         "res.SuccessResponse": {
             "type": "object",
             "properties": {
@@ -704,26 +911,24 @@ const docTemplate = `{
                 }
             }
         },
-        "res.ProjectResponse": {
-            "type": "object",
-            "properties": {
-                "project": {
-                    "$ref": "#/definitions/project_dto.ProjectDto"
-                }
-            }
-        },
-        "res.ProjectsResponse": {
-            "type": "object",
-            "properties": {
-                "projects": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/project_dto.ProjectDto"
-                    }
-                }
-            }
-        },
         "res.UserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john@john.com"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "user_dto.UserDto": {
             "type": "object",
             "properties": {
                 "email": {

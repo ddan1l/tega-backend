@@ -24,7 +24,12 @@ func (r *projectPgRepository) WithTx(db database.Database) ProjectRepository {
 func (r *projectPgRepository) FindProjectUser(in *project_dto.FindBySlugAndUserIdDto) (*models.ProjectUser, error) {
 	var projectUsers []models.ProjectUser
 
-	result := r.db.GetDb().Preload("Project").Preload("Role").Where("user_id = ?", in.UserID).Find(&projectUsers)
+	result := r.db.GetDb().
+		Preload("Project").
+		Preload("Role").
+		Preload("User").
+		Where("user_id = ?", in.UserID).
+		Find(&projectUsers)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -39,10 +44,30 @@ func (r *projectPgRepository) FindProjectUser(in *project_dto.FindBySlugAndUserI
 	return nil, errors.New("not fouund")
 }
 
+func (r *projectPgRepository) FindProjectUsers(in *project_dto.FindByIdDto) (*[]models.ProjectUser, error) {
+	var projectUsers []models.ProjectUser
+
+	result := r.db.GetDb().
+		Preload("Project").
+		Preload("Role").
+		Preload("User").
+		Where("project_id = ?", in.ID).
+		Find(&projectUsers)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &projectUsers, nil
+}
+
 func (r *projectPgRepository) FindProjectsByUserId(in *project_dto.FindByUserIdDto) (*[]models.Project, error) {
 	var projectUsers []models.ProjectUser
 
-	result := r.db.GetDb().Preload("Project").Preload("Role").Where("user_id = ?", in.UserID).Find(&projectUsers)
+	result := r.db.GetDb().
+		Preload("Project").
+		Where("user_id = ?", in.UserID).
+		Find(&projectUsers)
 
 	if result.Error != nil {
 		return nil, result.Error

@@ -8,5 +8,6 @@ type UserHandler interface {
 	UserProjects(c *gin.Context)
 	CreateProject(c *gin.Context)
 	ProjectsPolicies(c *gin.Context)
-	UserProject(c *gin.Context)
+	ProjectUser(c *gin.Context)
+	ProjectUsers(c *gin.Context)
 }

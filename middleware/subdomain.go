@@ -43,16 +43,7 @@ func (m *subdomainMiddleware) Middleware() gin.HandlerFunc {
 				return
 			}
 
-			c.Set("ProjectUser", project_dto.ProjectUserDto{
-				ID:        projectUser.ID,
-				UserID:    projectUser.UserID,
-				RoleID:    projectUser.RoleID,
-				ProjectID: projectUser.ProjectID,
-				Project: &project_dto.ProjectDto{
-					ID:   projectUser.Project.ID,
-					Slug: projectUser.Project.Slug,
-				},
-			})
+			c.Set("ProjectUser", *projectUser)
 		}
 
 		c.Next()

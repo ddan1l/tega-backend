@@ -5,7 +5,7 @@ package errs
 type AlreadyExistsError struct {
 	Status  int    `json:"status" example:"409"`
 	Code    string `json:"code" example:"ALREADY_EXISTS"`
-	Message string `json:"message" example:"User already exists."`
+	Message string `json:"message" example:"Already exists."`
 }
 
 type IncorrectPasswordError struct {
@@ -54,5 +54,11 @@ type BadRequestError struct {
 	Status  int    `json:"status" example:"400"`
 	Code    string `json:"code" example:"BAD_REQUEST"`
 	Message string `json:"message" example:"Bad request."`
+}
+
+type NotFoundError struct {
+	Status  int    `json:"status" example:"404"`
+	Code    string `json:"code" example:"NOT_FOUND"`
+	Message string `json:"message" example:"Not found."`
 }
 
