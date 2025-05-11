@@ -41,7 +41,7 @@ func (r *projectPgRepository) FindProjectUser(in *project_dto.FindBySlugAndUserI
 		}
 	}
 
-	return nil, errors.New("not fouund")
+	return nil, errors.New("project user not found")
 }
 
 func (r *projectPgRepository) FindProjectUsers(in *project_dto.FindByIdDto) (*[]models.ProjectUser, error) {

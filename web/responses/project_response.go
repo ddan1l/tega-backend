@@ -14,11 +14,11 @@ type ProjectResponse struct {
 }
 
 type ProjectUserResponse struct {
-	User project_dto.ProjectUserDto `json:"projectUser"`
+	ProjectUser project_dto.ProjectUserDto `json:"projectUser"`
 }
 
 type ProjectUsersResponse struct {
-	Users []project_dto.ProjectUserDto `json:"projectUsers"`
+	ProjectUsers []project_dto.ProjectUserDto `json:"projectUsers"`
 }
 
 type ProjectPoliciesResponse struct {

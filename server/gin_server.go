@@ -27,6 +27,9 @@ type ginServer struct {
 
 func NewGinServer(conf *config.Config, db database.Database) Server {
 	app := gin.Default()
+
+	app.SetTrustedProxies(nil)
+
 	factory := factory.NewDefaultFactory(db)
 
 	log.SetOutput(os.Stdout)
@@ -93,6 +96,7 @@ func (s *ginServer) initializeUserHandler() {
 	g := s.app.Group("/api/user")
 
 	g.GET("", userHandler.User)
+	g.GET("/app", userHandler.UserApp)
 }
 
 func (s *ginServer) initializeProjectHandler() {

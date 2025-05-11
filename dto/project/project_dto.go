@@ -4,12 +4,12 @@ import user_dto "github.com/ddan1l/tega-backend/dto/user"
 
 type (
 	ProjectUserDto struct {
-		ID        int `json:"id" example:"1"`
-		UserID    int `json:"user_id" example:"1"`
-		RoleID    int `json:"role_id" example:"1"`
-		ProjectID int `json:"project_id" example:"1"`
-		Project   *ProjectDto
-		User      *user_dto.UserDto
+		ID        int               `json:"id" example:"1"`
+		UserID    int               `json:"user_id" example:"1"`
+		RoleID    int               `json:"role_id" example:"1"`
+		ProjectID int               `json:"project_id" example:"1"`
+		Project   *ProjectDto       `json:"project" example:"1"`
+		User      *user_dto.UserDto `json:"user" example:"1"`
 	}
 
 	CreateProjectDto struct {

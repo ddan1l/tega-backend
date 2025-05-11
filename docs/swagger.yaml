@@ -214,6 +214,15 @@ definitions:
         example: true
         type: boolean
     type: object
+  res.UserAppResponse:
+    properties:
+      projectUser:
+        $ref: '#/definitions/project_dto.ProjectUserDto'
+      projects:
+        items:
+          $ref: '#/definitions/project_dto.ProjectDto'
+        type: array
+    type: object
   res.UserResponse:
     properties:
       email:
@@ -558,6 +567,35 @@ paths:
                   $ref: '#/definitions/errs.ForbiddenError'
               type: object
       summary: User
+      tags:
+      - user
+  /user/app:
+    get:
+      consumes:
+      - application/json
+      description: User app
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.SuccessWithDataResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.UserAppResponse'
+              type: object
+        "403":
+          description: Forbidden
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.ErrorResponse'
+            - properties:
+                error:
+                  $ref: '#/definitions/errs.ForbiddenError'
+              type: object
+      summary: User app
       tags:
       - user
 swagger: "2.0"

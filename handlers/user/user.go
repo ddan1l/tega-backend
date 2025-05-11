@@ -6,4 +6,5 @@ import (
 
 type UserHandler interface {
 	User(c *gin.Context)
+	UserApp(c *gin.Context)
 }

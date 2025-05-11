@@ -133,7 +133,7 @@ func (h *userHandler) ProjectUser(c *gin.Context) {
 	} else {
 
 		r := &res.ProjectUserResponse{
-			User: *user,
+			ProjectUser: *user,
 		}
 
 		res.SuccessWithData(c, r)
@@ -162,7 +162,7 @@ func (h *userHandler) ProjectUsers(c *gin.Context) {
 		}
 
 		r := &res.ProjectUsersResponse{
-			Users: *dto,
+			ProjectUsers: *dto,
 		}
 
 		res.SuccessWithData(c, r)

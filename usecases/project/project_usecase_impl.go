@@ -33,7 +33,7 @@ func (u *projectUsecaseImpl) GetProjectUser(in *project_dto.FindBySlugAndUserIdD
 	projectUser, err := u.projectRepository.FindProjectUser(in)
 
 	if err != nil {
-		return nil, errs.BadRequest.WithError(err)
+		return nil, errs.Forbidden.WithError(err)
 	}
 
 	projectUserDto := &project_dto.ProjectUserDto{

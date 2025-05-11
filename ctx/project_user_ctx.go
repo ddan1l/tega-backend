@@ -2,7 +2,6 @@ package ctx
 
 import (
 	"errors"
-	"log"
 
 	project_dto "github.com/ddan1l/tega-backend/dto/project"
 	"github.com/gin-gonic/gin"
@@ -12,12 +11,10 @@ func GetProjectUserFromContext(c *gin.Context) (*project_dto.ProjectUserDto, err
 	projectUser, exists := c.Get("ProjectUser")
 
 	if !exists {
-		return nil, errors.New("project user not found in context")
+		return nil, errors.New("project not found in context")
 	}
 
 	projectUserObj, ok := projectUser.(project_dto.ProjectUserDto)
-
-	log.Println(projectUser)
 
 	if !ok {
 		return nil, errors.New("invalid project user type in context")
